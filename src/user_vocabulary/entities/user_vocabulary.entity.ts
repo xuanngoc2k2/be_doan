@@ -13,7 +13,7 @@ export class User_Vocabulary {
     @Column({ default: 0 })
     isRemember: number;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 
     @ManyToOne(() => User, (user) => user.user_vocabularys)

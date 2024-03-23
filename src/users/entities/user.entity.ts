@@ -18,13 +18,13 @@ export class User {
     @Column({ nullable: false, unique: true })
     email: string;
 
-    @Column({ nullable: false, unique: true })
+    @Column({ unique: true })
     phone_number: string;
 
     @Column({ nullable: false })
     full_name: string;
 
-    @Column({ nullable: false })
+    @Column()
     image: string;
 
     @Column({ nullable: false })
@@ -33,13 +33,13 @@ export class User {
     @Column({ nullable: false, default: 0 })
     level: number;
 
-    @Column({ nullable: false, default: 1 })
-    role: number;
+    @Column({ nullable: false, default: "USER" })
+    role: string;
 
     @Column()
     last_login: Date;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 
     @OneToMany(() => User_Course, (user_course) => user_course.user)

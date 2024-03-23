@@ -16,7 +16,7 @@ export class Course {
     @Column({ nullable: false })
     level_required: number;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 
     @OneToMany(() => Lesson, (lesson) => lesson.course)

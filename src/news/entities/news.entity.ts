@@ -11,6 +11,6 @@ export class News {
     @Column({ nullable: false })
     image: string;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 }

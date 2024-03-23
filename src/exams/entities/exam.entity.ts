@@ -1,5 +1,6 @@
 import { Question } from 'src/question/entities/question.entity';
 import { Result } from 'src/result/entities/result.entity';
+import { Type_Question } from 'src/type_question/entities/type_question.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -22,7 +23,7 @@ export class Exam {
     @Column()
     endAt: Date;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 
     @OneToMany(() => Result, (result) => result.exam)
@@ -30,4 +31,7 @@ export class Exam {
 
     @OneToMany(() => Question, (question) => question.exam)
     questions: Question[]
+
+    @OneToMany(() => Type_Question, (type_question) => type_question.exam)
+    type_questions: Type_Question[]
 }

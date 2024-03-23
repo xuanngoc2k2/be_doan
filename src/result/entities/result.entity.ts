@@ -10,7 +10,7 @@ export class Result {
     @Column({ nullable: false })
     score: number;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 
     @ManyToOne(() => Exam, (exam) => exam.results)

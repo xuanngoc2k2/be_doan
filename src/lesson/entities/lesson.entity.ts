@@ -15,7 +15,7 @@ export class Lesson {
     @Column({ nullable: false, type: 'longtext' })
     content: string;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 
     @ManyToOne(() => Course, (course) => course.lessons)

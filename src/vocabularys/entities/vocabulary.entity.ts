@@ -15,7 +15,7 @@ export class Vocabulary {
     @Column({ nullable: false })
     example: string;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 
     @OneToMany(() => User_Vocabulary, (user_vocabulary) => user_vocabulary.vocabulary)

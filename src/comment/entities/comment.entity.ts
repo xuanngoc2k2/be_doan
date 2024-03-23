@@ -13,7 +13,7 @@ export class Comment {
     @Column({ nullable: false })
     commentAt: string;
 
-    @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    @CreateDateColumn()
     createdAt: Date;
 
     @ManyToOne(() => User, (user) => user.comments)

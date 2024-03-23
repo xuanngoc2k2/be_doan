@@ -17,6 +17,11 @@ import { ResultDetailModule } from './result_detail/result_detail.module';
 import { UserCourseModule } from './user_course/user_course.module';
 import { UserLessonModule } from './user_lesson/user_lesson.module';
 import { UserVocabularyModule } from './user_vocabulary/user_vocabulary.module';
+import { AuthModule } from './auth/auth.module';
+import { AuthService } from './auth/auth.service';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { TypeQuestionModule } from './type_question/type_question.module';
 
 @Module({
   imports: [
@@ -51,8 +56,15 @@ import { UserVocabularyModule } from './user_vocabulary/user_vocabulary.module';
     UserCourseModule,
     UserLessonModule,
     UserVocabularyModule,
+    AuthModule,
+    TypeQuestionModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: JwtAuthGuard,
+    // },
+  ],
 })
 export class AppModule { }
