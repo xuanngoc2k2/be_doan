@@ -19,6 +19,9 @@ export class Type_Question {
     @Column({ nullable: false })
     type: string;
 
+    @Column()
+    image: string;
+
     @OneToMany(() => Question, (question) => question.type_question)
     questions: Question[]
 

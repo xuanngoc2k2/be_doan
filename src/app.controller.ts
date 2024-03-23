@@ -13,21 +13,21 @@ export class AppController {
     private authService: AuthService
   ) { }
 
-  @Public()
-  @UseGuards(LocalAuthGuard)
-  @Post('/login')
-  handleLogin(@Request() req) {
-    return this.authService.login(req.user);
-  }
+  // @Public()
+  // @UseGuards(LocalAuthGuard)
+  // @Post('/login')
+  // handleLogin(@Request() req) {
+  //   return this.authService.login(req.user);
+  // }
 
-  @Public()
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
+  // @Public()
+  // @Get('profile')
+  // getProfile(@Request() req) {
+  //   return req.user;
+  // }
 
-  @Get('profile11')
-  getProfile1(@Request() req) {
-    return "req.user";
-  }
+  // @Get('profile11')
+  // getProfile1(@Request() req) {
+  //   return "req.user";
+  // }
 }

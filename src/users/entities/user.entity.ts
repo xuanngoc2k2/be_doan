@@ -1,4 +1,5 @@
 import { Comment } from 'src/comment/entities/comment.entity';
+import { Result } from 'src/result/entities/result.entity';
 import { User_Course } from 'src/user_course/entities/user_course.entity';
 import { User_Lesson } from 'src/user_lesson/entities/user_lesson.entity';
 import { User_Vocabulary } from 'src/user_vocabulary/entities/user_vocabulary.entity';
@@ -24,22 +25,25 @@ export class User {
     @Column({ nullable: false })
     full_name: string;
 
-    @Column()
+    @Column({ nullable: true })
     image: string;
 
     @Column({ nullable: false })
     date_of_birth: Date;
 
-    @Column({ nullable: false, default: 0 })
+    @Column({ default: 0 })
     level: number;
 
-    @Column({ nullable: false, default: "USER" })
+    @Column({ default: "USER" })
     role: string;
 
-    @Column()
+    @Column({ nullable: true })
     last_login: Date;
 
-    @CreateDateColumn()
+    @Column({ nullable: true })
+    refreshToken: string;
+
+    @CreateDateColumn({ nullable: true })
     createdAt: Date;
 
     @OneToMany(() => User_Course, (user_course) => user_course.user)
@@ -53,4 +57,7 @@ export class User {
 
     @OneToMany(() => User_Vocabulary, (user_vocabulary) => user_vocabulary.user)
     user_vocabularys: User_Vocabulary[]
+
+    @OneToMany(() => Result, (result) => result.user)
+    results: Result[]
 }

@@ -25,11 +25,11 @@ export class Question {
     @OneToMany(() => Answer, (answer) => answer.question)
     answers: Answer[]
 
-    @ManyToOne(() => Lesson, (lesson) => lesson.questions)
-    lesson: Lesson
+    // @ManyToOne(() => Lesson, (lesson) => lesson.questions)
+    // lesson: Lesson
 
-    @ManyToOne(() => Exam, (exam) => exam.questions)
-    exam: Exam
+    // @ManyToOne(() => Exam, (exam) => exam.questions)
+    // exam: Exam
 
     @ManyToOne(() => Type_Question, (type_question) => type_question.questions)
     type_question: Type_Question

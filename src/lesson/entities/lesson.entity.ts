@@ -21,8 +21,8 @@ export class Lesson {
     @ManyToOne(() => Course, (course) => course.lessons)
     course: Course
 
-    @OneToMany(() => Question, (question) => question.lesson)
-    questions: Question[]
+    // @OneToMany(() => Question, (question) => question.lesson)
+    // questions: Question[]
 
     @OneToMany(() => User_Lesson, (user_lesson) => user_lesson.lesson)
     user_lessons: User_Lesson[]

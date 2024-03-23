@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,14 +18,24 @@ export class UsersService {
     return hash;
   }
 
-  async create(username: string, password: string) {
-    const hashPassword = this.getHashPassword(password);
-    let newUser = this.userRepo.create({ username, password: hashPassword });
+  async create(userDTO: CreateUserDto) {
+    if (await this.userRepo.findOne({ where: { username: userDTO.username } })) {
+      throw new BadRequestException("Username đã tồn tại !!");
+    }
+    else if (await this.userRepo.findOne({ where: { email: userDTO.email } })) {
+      throw new BadRequestException("Email đã tồn tại !!");
+    }
+    else if (userDTO.phone_number != "" && await this.userRepo.findOne({ where: { phone_number: userDTO.phone_number } })) {
+      throw new BadRequestException("Số điện thoại đã tồn tại !!");
+    }
+    const hashPassword = this.getHashPassword(userDTO.password);
+    let { password, ...user } = userDTO;
+    let newUser = this.userRepo.create({ password: hashPassword, ...user });
     return await this.userRepo.save(newUser);
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userRepo.find({});
   }
 
   findOne(id: number) {

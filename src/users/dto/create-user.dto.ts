@@ -1,1 +1,21 @@
-export class CreateUserDto {}
+import { IsDate, IsEmail, IsNotEmpty } from "class-validator";
+
+export class CreateUserDto {
+    @IsNotEmpty({ message: "Không được để trống !!" })
+    username: string;
+
+    @IsNotEmpty({ message: "Không được để trống !!" })
+    password: string;
+
+    @IsNotEmpty({ message: "Không được để trống !!" })
+    @IsEmail({}, { message: "Phải là email" })
+    email: string;
+
+    phone_number: string;
+
+    @IsNotEmpty({ message: "Không được để trống !!" })
+    full_name: string;
+
+    // @IsDate({ message: "Phải là ngày !!" })
+    date_of_birth: Date;
+}

@@ -29,8 +29,8 @@ export class Exam {
     @OneToMany(() => Result, (result) => result.exam)
     results: Result[]
 
-    @OneToMany(() => Question, (question) => question.exam)
-    questions: Question[]
+    // @OneToMany(() => Question, (question) => question.exam)
+    // questions: Question[]
 
     @OneToMany(() => Type_Question, (type_question) => type_question.exam)
     type_questions: Type_Question[]
