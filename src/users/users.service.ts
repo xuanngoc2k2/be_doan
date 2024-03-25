@@ -3,7 +3,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ObjectId, Repository } from 'typeorm';
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs'
 import { Request } from 'express';
 @Injectable()
@@ -19,7 +19,7 @@ export class UsersService {
     return hash;
   }
 
-  async create(userDTO: CreateUserDto) {
+  async register(userDTO: CreateUserDto) {
     if (await this.userRepo.findOne({ where: { username: userDTO.username } })) {
       throw new BadRequestException("Username đã tồn tại !!");
     }
@@ -47,6 +47,10 @@ export class UsersService {
     return this.userRepo.findOne({ where: { username } });
   }
 
+  findUserByToken(refreshToken: string) {
+    return this.userRepo.findOne({ where: { refreshToken } });
+  }
+
   isValidPassword(password: string, hash: string) {
     return compareSync(password, hash);
   }
@@ -58,5 +62,9 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  updateRefreshToken = async (refreshToken: string, id: number) => {
+    return await this.userRepo.update({ id }, { refreshToken });
   }
 }

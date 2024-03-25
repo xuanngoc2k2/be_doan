@@ -9,11 +9,11 @@ import { use } from 'passport';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
-  @Public()
-  @Post()
-  create(@Body() createUserDTO: CreateUserDto) {
-    return this.usersService.create(createUserDTO);
-  }
+  // @Public()
+  // @Post()
+  // create(@Body() createUserDTO: CreateUserDto) {
+  //   return this.usersService.register(createUserDTO);
+  // }
 
   @Get()
   findAll() {

@@ -40,7 +40,7 @@ export class User {
     @Column({ nullable: true })
     last_login: Date;
 
-    @Column({ nullable: true })
+    @Column({ nullable: true, type: 'longtext' })
     refreshToken: string;
 
     @CreateDateColumn({ nullable: true })
