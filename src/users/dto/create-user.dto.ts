@@ -11,6 +11,7 @@ export class CreateUserDto {
     @IsEmail({}, { message: "Phải là email" })
     email: string;
 
+    @IsNotEmpty({ message: "Không được để trống !!" })
     phone_number: string;
 
     @IsNotEmpty({ message: "Không được để trống !!" })

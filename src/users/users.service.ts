@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs'
+import { Request } from 'express';
 @Injectable()
 export class UsersService {
   constructor(
@@ -51,8 +52,8 @@ export class UsersService {
   }
 
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: number, user: User) {
+    return `This action updates a #${user.username} user`;
   }
 
   remove(id: number) {
