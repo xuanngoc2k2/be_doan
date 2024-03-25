@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Request } from '@nes
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Public } from 'src/decorator/customize';
+import { Public, User } from 'src/decorator/customize';
+import { use } from 'passport';
 
 @Controller('users')
 export class UsersController {
@@ -25,8 +26,8 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Request() req) {
-    return this.usersService.update(+id, req.user);
+  update(@Param('id') id: string, @User() user) {
+    return this.usersService.update(+id, user);
   }
 
   @Delete(':id')
