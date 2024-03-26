@@ -22,6 +22,7 @@ import { AuthService } from './auth/auth.service';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TypeQuestionModule } from './type_question/type_question.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { TypeQuestionModule } from './type_question/type_question.module';
     UserVocabularyModule,
     AuthModule,
     TypeQuestionModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService,

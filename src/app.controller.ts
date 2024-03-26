@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Render, Request, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './auth/local-auth.guard';
@@ -20,11 +20,12 @@ export class AppController {
   //   return this.authService.login(req.user);
   // }
 
-  // @Public()
-  // @Get('profile')
-  // getProfile(@Request() req) {
-  //   return req.user;
-  // }
+  @Public()
+  @Get()
+  @Render('home')
+  getProfile() {
+    // return req.user;
+  }
 
   // @Get('profile11')
   // getProfile1(@Request() req) {
