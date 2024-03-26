@@ -15,6 +15,9 @@ export class Lesson {
     @Column({ nullable: false, type: 'longtext' })
     content: string;
 
+    @Column({ type: 'longtext' })
+    description: string;
+
     @CreateDateColumn()
     createdAt: Date;
 

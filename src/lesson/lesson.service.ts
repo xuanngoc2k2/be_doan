@@ -1,20 +1,59 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Lesson } from './entities/lesson.entity';
+import { Repository } from 'typeorm';
+import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class LessonService {
-  create(createLessonDto: CreateLessonDto) {
-    return 'This action adds a new lesson';
+  constructor(
+    @InjectRepository(Lesson)
+    private readonly lessonRepo: Repository<Lesson>,
+    @InjectRepository(Course)
+    private readonly courseRepo: Repository<Course>
+  ) {
+
+  }
+
+  async create(createLessonDto: CreateLessonDto) {
+    const findCourse = await this.courseRepo.findOne({ where: { id: createLessonDto.courseId } })
+    if (!findCourse) {
+      throw new BadRequestException("Không tìm thấy khóa học");
+    }
+    const newLesson = this.lessonRepo.create({
+      ...createLessonDto,
+      course: findCourse, // Gán course từ findCourse
+    });
+
+    return this.lessonRepo.save(newLesson);
   }
 
   findAll() {
-    return `This action returns all lesson`;
+    return this.lessonRepo
+      .createQueryBuilder('lesson')
+      .leftJoinAndSelect('lesson.course', 'course') // Inner join với bảng Course và select các thông tin của Course
+      .getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} lesson`;
+  async findOne(id: number) {
+    const lesson = await this.lessonRepo.
+      createQueryBuilder('lesson').
+      innerJoinAndSelect('lesson.course', 'course')
+      .where('lesson.id = :id', { id }) // Chỉ định điều kiện tìm kiếm bằng ID
+      .getOne();
+    return lesson;
   }
+
+  findLessonByCourse = async (courseId) => {
+    if (!await this.courseRepo.find({ where: { id: courseId } })) {
+      throw new BadRequestException("Không tìm thấy khóa học");
+    }
+    const Lessons = await this.lessonRepo.find({ where: { course: { id: courseId } } });
+    return Lessons;
+  }
+
 
   update(id: number, updateLessonDto: UpdateLessonDto) {
     return `This action updates a #${id} lesson`;
