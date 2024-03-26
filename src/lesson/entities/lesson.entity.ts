@@ -2,7 +2,7 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import { Course } from 'src/course/entities/course.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { User_Lesson } from 'src/user_lesson/entities/user_lesson.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Lesson {
@@ -20,6 +20,9 @@ export class Lesson {
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @DeleteDateColumn({ name: 'deleted_at' })
+    deletedAt: Date;
 
     @ManyToOne(() => Course, (course) => course.lessons)
     course: Course

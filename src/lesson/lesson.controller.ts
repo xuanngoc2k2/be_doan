@@ -34,11 +34,13 @@ export class LessonController {
   }
 
   @Patch(':id')
+  @ResponseMessage("Cập nhật thông tin bài học")
   update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
     return this.lessonService.update(+id, updateLessonDto);
   }
 
   @Delete(':id')
+  @ResponseMessage("Xóa bài học")
   remove(@Param('id') id: string) {
     return this.lessonService.remove(+id);
   }

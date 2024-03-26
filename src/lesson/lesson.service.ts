@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Lesson } from './entities/lesson.entity';
 import { Repository } from 'typeorm';
 import { Course } from 'src/course/entities/course.entity';
+import { IsNumber } from 'class-validator';
 
 @Injectable()
 export class LessonService {
@@ -55,11 +56,33 @@ export class LessonService {
   }
 
 
-  update(id: number, updateLessonDto: UpdateLessonDto) {
-    return `This action updates a #${id} lesson`;
+  async update(id: number, updateLessonDto: UpdateLessonDto) {
+    if (Number.isNaN(Number(id))) {
+      throw new BadRequestException("ID phải là số!!")
+    }
+    const lesson = this.lessonRepo.find({ where: { id } });
+    if (!lesson) {
+      throw new BadRequestException("Không tìm thấy bài học");
+    }
+    const result = await this.lessonRepo.update({ id }, { ...updateLessonDto });
+    if (result.affected === 0) {
+      throw new BadRequestException("Cập nhật lỗi !");
+    }
+    return { success: true };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} lesson`;
+  async remove(id: number) {
+    if (Number.isNaN(Number(id))) {
+      throw new BadRequestException("ID phải là số!!")
+    }
+    const lesson = await this.lessonRepo.find({ where: { id } });
+    if (lesson.length === 0) {
+      throw new BadRequestException("Không tìm thấy bài học");
+    }
+    const rs = await this.lessonRepo.softDelete({ id });
+    if (rs.affected === 0) {
+      throw new BadRequestException("Không thể xóa được !");
+    }
+    return { success: true };
   }
 }
