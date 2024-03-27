@@ -2,6 +2,7 @@ import { Comment } from 'src/comment/entities/comment.entity';
 import { Course } from 'src/course/entities/course.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { User_Lesson } from 'src/user_lesson/entities/user_lesson.entity';
+import { Vocabulary } from 'src/vocabularys/entities/vocabulary.entity';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -35,6 +36,9 @@ export class Lesson {
 
     @OneToMany(() => User_Lesson, (user_lesson) => user_lesson.lesson)
     user_lessons: User_Lesson[]
+
+    @OneToMany(() => Vocabulary, (vocabulary) => vocabulary.lesson)
+    vocabularys: Vocabulary[]
 
     @OneToMany(() => Comment, (comment) => comment.lesson)
     comments: Comment[]

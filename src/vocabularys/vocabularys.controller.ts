@@ -2,17 +2,20 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { VocabularysService } from './vocabularys.service';
 import { CreateVocabularyDto } from './dto/create-vocabulary.dto';
 import { UpdateVocabularyDto } from './dto/update-vocabulary.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('vocabularys')
 export class VocabularysController {
-  constructor(private readonly vocabularysService: VocabularysService) {}
+  constructor(private readonly vocabularysService: VocabularysService) { }
 
   @Post()
+  @ResponseMessage("Tạo mới từ vựng")
   create(@Body() createVocabularyDto: CreateVocabularyDto) {
     return this.vocabularysService.create(createVocabularyDto);
   }
 
   @Get()
+  @ResponseMessage("Get all Vocabulary")
   findAll() {
     return this.vocabularysService.findAll();
   }
