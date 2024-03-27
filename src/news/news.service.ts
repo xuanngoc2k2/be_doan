@@ -1,26 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { News } from './entities/news.entity';
+import { Public } from 'src/decorator/customize';
 
 @Injectable()
 export class NewsService {
-  create(createNewsDto: CreateNewsDto) {
-    return 'This action adds a new news';
+  constructor(
+    @InjectRepository(News)
+    private newRepo: Repository<News>
+  ) {
+
+  }
+  async create(createNewsDto: CreateNewsDto) {
+    const newNews = await this.newRepo.create({ ...createNewsDto });
+    return await this.newRepo.save(newNews);
   }
 
-  findAll() {
-    return `This action returns all news`;
+  async findAll() {
+    return await this.newRepo.find({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} news`;
+  async findOne(id: number) {
+    return await this.newRepo.find({ where: { id } });
   }
 
-  update(id: number, updateNewsDto: UpdateNewsDto) {
-    return `This action updates a #${id} news`;
+  async update(id: number, updateNewsDto: UpdateNewsDto) {
+    const updateNews = await this.newRepo.update({ id }, { ...updateNewsDto });
+    if (updateNews.affected === 0) {
+      throw new BadRequestException("Lỗi update");
+    }
+    return { success: true };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} news`;
+  async remove(id: number) {
+    const news = await this.newRepo.findOne({ where: { id } });
+    if (!news) {
+      throw new NotFoundException('Không tìm thấy tin tức');
+    }
+    const deleteNews = await this.newRepo.softDelete({ id });
+    if (deleteNews.affected === 0) {
+      throw new BadRequestException("Lỗi xóa");
+    }
+    return { success: true };
   }
 }

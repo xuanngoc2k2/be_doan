@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class News {
@@ -8,9 +8,12 @@ export class News {
     @Column({ nullable: false, type: 'longtext' })
     content: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     image: string;
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @DeleteDateColumn({ name: 'deleted_at' })
+    deleteAt: Date;
 }
