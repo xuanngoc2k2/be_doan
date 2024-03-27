@@ -30,18 +30,51 @@ export class UserLessonService {
     return await this.userLessonRepo.save(newUserLesson);
   }
 
-  findAll() {
-    return `This action returns all userLesson`;
+  async findAll(user: IUser) {
+    return this.userLessonRepo.find({ where: { userId: user.id } });
   }
 
   findOne(id: number) {
     return `This action returns a #${id} userLesson`;
   }
 
-  update(id: number, updateUserLessonDto: UpdateUserLessonDto) {
-    return `This action updates a #${id} userLesson`;
+  async update(id: number, user: IUser) {
+    const userLesson = await this.userLessonRepo.findOne({
+      where: {
+        userId: user.id,
+        lessonId: id
+      }
+    });
+    if (!userLesson) {
+      throw new Error('Không tìm thấy User_Lesson');
+    }
+    if (userLesson.isComplete) {
+      throw new BadRequestException("Bài học đã hoàn thành");
+    }
+    userLesson.isComplete = 1;
+    userLesson.completeAt = new Date();
+    return this.userLessonRepo.save(userLesson);
   }
-
+  updateTime = async (id: number, time: string, user: IUser) => {
+    const userLesson = await this.userLessonRepo.findOne({
+      where: {
+        userId: user.id,
+        lessonId: id
+      }
+    });
+    if (!userLesson) {
+      throw new Error('Không tìm thấy User_Lesson');
+    }
+    if (userLesson.isComplete) {
+      throw new BadRequestException("Bài học đã hoàn thành");
+    }
+    userLesson.currentTime = time;
+    const updateUL = await this.userLessonRepo.update({ lessonId: id, userId: user.id }, { ...userLesson });
+    if (updateUL.affected === 0) {
+      throw new BadRequestException("Update lỗi");
+    }
+    return { success: true };
+  }
   remove(id: number) {
     return `This action removes a #${id} userLesson`;
   }
