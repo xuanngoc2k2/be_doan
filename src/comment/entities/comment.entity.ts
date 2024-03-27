@@ -1,6 +1,6 @@
 import { Lesson } from 'src/lesson/entities/lesson.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Comment {
@@ -10,11 +10,17 @@ export class Comment {
     @Column({ nullable: false })
     comment: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, default: '0:00' })
     commentAt: string;
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @DeleteDateColumn({ name: 'delete_at' })
+    deleteAt: Date;
+
+    @Column({ nullable: false })
+    lessonId: number;
 
     @ManyToOne(() => User, (user) => user.comments)
     user: User

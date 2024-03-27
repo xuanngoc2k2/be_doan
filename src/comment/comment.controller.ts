@@ -2,14 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('comment')
 export class CommentController {
-  constructor(private readonly commentService: CommentService) {}
+  constructor(private readonly commentService: CommentService) { }
 
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
+  @ResponseMessage("Viết Comment")
+  create(@Body() createCommentDto: CreateCommentDto, @User() user: IUser) {
+    return this.commentService.create(createCommentDto, user);
   }
 
   @Get()

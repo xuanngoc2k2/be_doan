@@ -6,6 +6,7 @@ import { Lesson } from './entities/lesson.entity';
 import { Repository } from 'typeorm';
 import { Course } from 'src/course/entities/course.entity';
 import { IsNumber } from 'class-validator';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Injectable()
 export class LessonService {
@@ -13,7 +14,9 @@ export class LessonService {
     @InjectRepository(Lesson)
     private readonly lessonRepo: Repository<Lesson>,
     @InjectRepository(Course)
-    private readonly courseRepo: Repository<Course>
+    private readonly courseRepo: Repository<Course>,
+    @InjectRepository(Comment)
+    private readonly commentRepo: Repository<Comment>
   ) {
 
   }
@@ -53,6 +56,20 @@ export class LessonService {
     }
     const Lessons = await this.lessonRepo.find({ where: { course: { id: courseId } } });
     return Lessons;
+  }
+
+  getComment = async (lessonId: number) => {
+    const lesson = await this.lessonRepo.findOne({ where: { id: lessonId } });
+    if (!lesson) {
+      throw new BadRequestException('Không tìm thấy bài học');
+    }
+
+    const comments = await this.commentRepo.createQueryBuilder('comment')
+      .innerJoinAndSelect('comment.user', 'user')
+      .where('comment.lessonId = :lessonId', { lessonId })
+      .getMany(); // Sử dụng getMany để thực hiện truy vấn và nhận kết quả
+
+    return comments;
   }
 
 

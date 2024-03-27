@@ -33,6 +33,12 @@ export class LessonController {
     return this.lessonService.findLessonByCourse(courseId);
   }
 
+  @Post('/comment')
+  @ResponseMessage("Lấy thông tin comment bài học")
+  handleGetCommentByLesson(@Body('lessonId') lessonId: string) {
+    return this.lessonService.getComment(+lessonId);
+  }
+
   @Patch(':id')
   @ResponseMessage("Cập nhật thông tin bài học")
   update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
