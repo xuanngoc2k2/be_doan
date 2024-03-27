@@ -10,13 +10,13 @@ export class User_Lesson {
     @PrimaryColumn()
     lessonId: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, default: 0 })
     isComplete: number;
 
-    @Column()
+    @Column({ nullable: true })
     completeAt: Date;
 
-    @Column()
+    @Column({ nullable: true })
     currentTime: string;
 
     @ManyToOne(() => User, (user) => user.user_lessons)

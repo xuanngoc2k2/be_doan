@@ -2,14 +2,16 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserLessonService } from './user_lesson.service';
 import { CreateUserLessonDto } from './dto/create-user_lesson.dto';
 import { UpdateUserLessonDto } from './dto/update-user_lesson.dto';
+import { User } from 'src/decorator/customize';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('user-lesson')
 export class UserLessonController {
-  constructor(private readonly userLessonService: UserLessonService) {}
+  constructor(private readonly userLessonService: UserLessonService) { }
 
   @Post()
-  create(@Body() createUserLessonDto: CreateUserLessonDto) {
-    return this.userLessonService.create(createUserLessonDto);
+  create(@Body('lessonId') lessonId: string, @User() user: IUser) {
+    return this.userLessonService.create(+lessonId, user);
   }
 
   @Get()

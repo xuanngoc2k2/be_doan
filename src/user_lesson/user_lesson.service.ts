@@ -1,11 +1,33 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUserLessonDto } from './dto/create-user_lesson.dto';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateUserLessonDto } from './dto/update-user_lesson.dto';
+import { IUser } from 'src/users/users.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Lesson } from 'src/lesson/entities/lesson.entity';
+import { Repository } from 'typeorm';
+import { User_Lesson } from './entities/user_lesson.entity';
 
 @Injectable()
 export class UserLessonService {
-  create(createUserLessonDto: CreateUserLessonDto) {
-    return 'This action adds a new userLesson';
+  constructor(
+    @InjectRepository(Lesson)
+    private lessonRepo: Repository<Lesson>,
+    @InjectRepository(User_Lesson)
+    private userLessonRepo: Repository<User_Lesson>
+  ) { }
+  async create(id: number, user: IUser) {
+    if (Number.isNaN(id)) {
+      throw new BadRequestException("Id phải là số");
+    }
+    const Lesson = await this.lessonRepo.findOne({ where: { id } });
+    if (Lesson === null) {
+      throw new NotFoundException("Không tìm thấy bài học");
+    }
+    const newUserLesson = this.userLessonRepo.create({
+      lessonId: id,
+      userId: user.id,
+      lesson: Lesson,
+    });
+    return await this.userLessonRepo.save(newUserLesson);
   }
 
   findAll() {

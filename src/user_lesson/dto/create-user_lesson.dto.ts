@@ -1,1 +1,3 @@
-export class CreateUserLessonDto {}
+export class CreateUserLessonDto {
+    lessonId: number
+}
