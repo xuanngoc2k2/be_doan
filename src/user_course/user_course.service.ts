@@ -46,6 +46,10 @@ export class UserCourseService {
     return this.userCourseRepo.save(newUserCourse);
   }
 
+  updateProgress = (id: number, userId: number) => {
+
+  }
+
   findAll() {
     return `This action returns all userCourse`;
   }

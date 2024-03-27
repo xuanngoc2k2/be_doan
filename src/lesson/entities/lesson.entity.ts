@@ -18,6 +18,9 @@ export class Lesson {
     @Column({ type: 'longtext' })
     description: string;
 
+    @Column({ default: 0 })
+    order: number;
+
     @CreateDateColumn()
     createdAt: Date;
 
