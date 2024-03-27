@@ -16,8 +16,9 @@ export class UserCourseController {
   }
 
   @Get()
-  findAll() {
-    return this.userCourseService.findAll();
+  @ResponseMessage("Lấy thông tin all khóa học của người dùng")
+  findAll(@User() user: IUser) {
+    return this.userCourseService.findAll(user);
   }
 
   @Get(':id')
@@ -26,6 +27,7 @@ export class UserCourseController {
   }
 
   @Patch(':id')
+  //update progress
   update(@Param('id') id: string, @Body() updateUserCourseDto: UpdateUserCourseDto) {
     return this.userCourseService.update(+id, updateUserCourseDto);
   }

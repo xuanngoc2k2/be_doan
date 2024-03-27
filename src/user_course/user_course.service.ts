@@ -50,14 +50,20 @@ export class UserCourseService {
 
   }
 
-  findAll() {
-    return `This action returns all userCourse`;
+  async findAll(user: IUser) {
+    const Courses = await this.userCourseRepo
+      .createQueryBuilder('user_course')
+      .leftJoinAndSelect('user_course.course', 'course')
+      .where('user_course.userId = :userId', { userId: user.id })
+      .getMany()
+    return Courses;
   }
 
   findOne(id: number) {
     return `This action returns a #${id} userCourse`;
   }
 
+  //update progress
   update(id: number, updateUserCourseDto: UpdateUserCourseDto) {
     return `This action updates a #${id} userCourse`;
   }
