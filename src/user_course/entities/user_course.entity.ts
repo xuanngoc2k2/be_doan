@@ -10,13 +10,13 @@ export class User_Course {
     @PrimaryColumn()
     courseId: number;
 
-    @Column({ nullable: false, type: 'float' })
+    @Column({ nullable: false, type: 'float', default: 0 })
     progress: number;
 
-    @Column({ nullable: false })
+    @CreateDateColumn({ nullable: true })
     startAt: Date
 
-    @Column()
+    @Column({ default: null })
     completeAt: Date
 
     @ManyToOne(() => User, (user) => user.user_courses)
