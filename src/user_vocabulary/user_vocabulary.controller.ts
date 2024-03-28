@@ -2,14 +2,17 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { UserVocabularyService } from './user_vocabulary.service';
 import { CreateUserVocabularyDto } from './dto/create-user_vocabulary.dto';
 import { UpdateUserVocabularyDto } from './dto/update-user_vocabulary.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('user-vocabulary')
 export class UserVocabularyController {
-  constructor(private readonly userVocabularyService: UserVocabularyService) {}
+  constructor(private readonly userVocabularyService: UserVocabularyService) { }
 
   @Post()
-  create(@Body() createUserVocabularyDto: CreateUserVocabularyDto) {
-    return this.userVocabularyService.create(createUserVocabularyDto);
+  @ResponseMessage("Thêm/Lưu từ mới vào yêu thích")
+  create(@Body('vocabularyId') vocabularyId: string, @User() user: IUser) {
+    return this.userVocabularyService.create(+vocabularyId, user);
   }
 
   @Get()
