@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { UserVocabularyService } from './user_vocabulary.service';
 import { CreateUserVocabularyDto } from './dto/create-user_vocabulary.dto';
 import { UpdateUserVocabularyDto } from './dto/update-user_vocabulary.dto';
@@ -16,22 +16,28 @@ export class UserVocabularyController {
   }
 
   @Get()
-  findAll() {
-    return this.userVocabularyService.findAll();
+  @ResponseMessage("Tìm tất cả từ mới của người dùng")
+  findAll(@User() user: IUser) {
+    return this.userVocabularyService.findAll(user);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userVocabularyService.findOne(+id);
+  // @Get(':id')
+  // findOne(@Param('id') id: string, @User() user: IUser) {
+  //   return this.userVocabularyService.findOne(+id, user);
+  // }
+
+  @Put()
+  update(
+    @Body('vocabularyId') vocabularyId: string,
+    @Body('isRemember') isRemember: number,
+    @User() user: IUser
+  ) {
+    return this.userVocabularyService.update(+vocabularyId, +isRemember, user);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserVocabularyDto: UpdateUserVocabularyDto) {
-    return this.userVocabularyService.update(+id, updateUserVocabularyDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userVocabularyService.remove(+id);
+  @Delete()
+  remove(@Body('vocabularyId') vocabularyId: string,
+    @User() user: IUser) {
+    return this.userVocabularyService.remove(+vocabularyId, user);
   }
 }

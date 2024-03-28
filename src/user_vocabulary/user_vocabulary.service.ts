@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserVocabularyDto } from './dto/create-user_vocabulary.dto';
 import { UpdateUserVocabularyDto } from './dto/update-user_vocabulary.dto';
 import { IUser } from 'src/users/users.interface';
@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Vocabulary } from 'src/vocabularys/entities/vocabulary.entity';
 import { Repository } from 'typeorm';
 import { User_Vocabulary } from './entities/user_vocabulary.entity';
+import { User } from 'src/decorator/customize';
 
 @Injectable()
 export class UserVocabularyService {
@@ -26,19 +27,39 @@ export class UserVocabularyService {
     return this.userVocabularyRepo.save(newUVocabulary);
   }
 
-  findAll() {
-    return `This action returns all userVocabulary`;
+  async findAll(user: IUser) {
+    return await this.userVocabularyRepo.find({ where: { userId: user.id } });
   }
 
-  findOne(id: number) {
+  findOne(id: number, user: IUser) {
     return `This action returns a #${id} userVocabulary`;
   }
 
-  update(id: number, updateUserVocabularyDto: UpdateUserVocabularyDto) {
-    return `This action updates a #${id} userVocabulary`;
+  async update(isRemember: number, vocabularyId: number, user: IUser) {
+    if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
+      throw new NotFoundException("Không tìm thấy từ vựng");
+    }
+    if (!await this.userVocabularyRepo.find({ where: { vocabularyId: vocabularyId, userId: user.id } })) {
+      throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
+    }
+    const updateUVocab = await this.userVocabularyRepo.update({ userId: user.id, vocabularyId: vocabularyId }, { isRemember });
+    if (updateUVocab.affected === 0) {
+      throw new BadRequestException("Update lỗi");
+    }
+    return { success: true };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} userVocabulary`;
+  async remove(vocabularyId: number, user: IUser) {
+    if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
+      throw new NotFoundException("Không tìm thấy từ vựng");
+    }
+    if (!await this.userVocabularyRepo.find({ where: { vocabularyId: vocabularyId, userId: user.id } })) {
+      throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
+    }
+    const deleteUVocab = await this.userVocabularyRepo.softDelete({ userId: user.id, vocabularyId: vocabularyId });
+    if (deleteUVocab.affected === 0) {
+      throw new BadRequestException("Delete lỗi");
+    }
+    return { success: true };
   }
 }
