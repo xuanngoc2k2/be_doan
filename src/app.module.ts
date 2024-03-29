@@ -21,8 +21,8 @@ import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { TypeQuestionModule } from './type_question/type_question.module';
 import { FileModule } from './file/file.module';
+import { GroupQuestionModule } from './group_question/group_question.module';
 
 @Module({
   imports: [
@@ -58,8 +58,8 @@ import { FileModule } from './file/file.module';
     UserLessonModule,
     UserVocabularyModule,
     AuthModule,
-    TypeQuestionModule,
     FileModule,
+    GroupQuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService,

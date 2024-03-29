@@ -6,7 +6,7 @@ import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, LessThan, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Type_Question {
+export class Group_Question {
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -14,17 +14,14 @@ export class Type_Question {
     description: string;
 
     @Column({ nullable: false })
-    score: number;
-
-    @Column({ nullable: false })
     type: string;
 
     @Column()
     image: string;
 
-    @OneToMany(() => Question, (question) => question.type_question)
+    @OneToMany(() => Question, (question) => question.group_question)
     questions: Question[]
 
-    @ManyToOne(() => Exam, (exam) => exam.type_questions)
+    @ManyToOne(() => Exam, (exam) => exam.group_questions)
     exam: Exam
 }

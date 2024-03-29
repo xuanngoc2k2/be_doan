@@ -1,8 +1,8 @@
 import { Answer } from 'src/answer/entities/answer.entity';
 import { Exam } from 'src/exams/entities/exam.entity';
+import { Group_Question } from 'src/group_question/entities/group_question.entity';
 import { Lesson } from 'src/lesson/entities/lesson.entity';
 import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
-import { Type_Question } from 'src/type_question/entities/type_question.entity';
 import { Column, CreateDateColumn, Entity, JoinColumn, LessThan, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -19,6 +19,9 @@ export class Question {
     @Column({ nullable: false })
     type: string;
 
+    @Column({ nullable: false })
+    score: number;
+
     @CreateDateColumn()
     createdAt: Date;
 
@@ -31,8 +34,8 @@ export class Question {
     // @ManyToOne(() => Exam, (exam) => exam.questions)
     // exam: Exam
 
-    @ManyToOne(() => Type_Question, (type_question) => type_question.questions)
-    type_question: Type_Question
+    @ManyToOne(() => Group_Question, (group_question) => group_question.questions)
+    group_question: Group_Question
 
     @OneToMany(() => Result_Detail, (result_detail) => result_detail.question)
     result_details: Result_Detail[]

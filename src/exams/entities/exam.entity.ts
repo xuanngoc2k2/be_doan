@@ -1,7 +1,6 @@
-import { Question } from 'src/question/entities/question.entity';
+import { Group_Question } from 'src/group_question/entities/group_question.entity';
 import { Result } from 'src/result/entities/result.entity';
-import { Type_Question } from 'src/type_question/entities/type_question.entity';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Exam {
@@ -11,7 +10,7 @@ export class Exam {
     @Column({ nullable: false, unique: true })
     exam_name: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     description: string;
 
     @Column({ nullable: false })
@@ -26,12 +25,15 @@ export class Exam {
     @CreateDateColumn()
     createdAt: Date;
 
+    @DeleteDateColumn({ name: 'deleted_at' })
+    deleteAt: Date;
+
     @OneToMany(() => Result, (result) => result.exam)
     results: Result[]
 
     // @OneToMany(() => Question, (question) => question.exam)
     // questions: Question[]
 
-    @OneToMany(() => Type_Question, (type_question) => type_question.exam)
-    type_questions: Type_Question[]
+    @OneToMany(() => Group_Question, (group_question) => group_question.exam)
+    group_questions: Group_Question[]
 }
