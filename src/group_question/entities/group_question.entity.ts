@@ -1,9 +1,6 @@
-import { Answer } from 'src/answer/entities/answer.entity';
 import { Exam } from 'src/exams/entities/exam.entity';
-import { Lesson } from 'src/lesson/entities/lesson.entity';
 import { Question } from 'src/question/entities/question.entity';
-import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, LessThan, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, LessThan, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Group_Question {
@@ -14,10 +11,16 @@ export class Group_Question {
     description: string;
 
     @Column({ nullable: false })
-    type: string;
+    content: string;
 
-    @Column()
+    @Column({ default: null })
     image: string;
+
+    @CreateDateColumn()
+    createAt: Date
+
+    @DeleteDateColumn({ name: 'delete_at' })
+    deleteAt: Date
 
     @OneToMany(() => Question, (question) => question.group_question)
     questions: Question[]
