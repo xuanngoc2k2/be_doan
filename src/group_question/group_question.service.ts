@@ -25,8 +25,16 @@ export class GroupQuestionService {
     return await this.groupQuestionRepo.find({ where: { id } });
   }
 
+  async findQuestion(id: number) {
+    return await this.groupQuestionRepo
+      .createQueryBuilder('group_question')
+      .innerJoinAndSelect('group_question.questions', 'question')
+      .where('group_question.id = :id', { id })
+      .getMany();
+  }
+
   async update(id: number, updateGroupQuestionDto: UpdateGroupQuestionDto) {
-    if (!await this.groupQuestionRepo.find({ where: { id } })) {
+    if (!await this.groupQuestionRepo.findOne({ where: { id } })) {
       throw new BadRequestException("Không tìm thấy group question");
     }
     const updateGQuestion = await this.groupQuestionRepo.update({ id }, { ...updateGroupQuestionDto });
@@ -37,7 +45,7 @@ export class GroupQuestionService {
   }
 
   async remove(id: number) {
-    if (!await this.groupQuestionRepo.find({ where: { id } })) {
+    if (!await this.groupQuestionRepo.findOne({ where: { id } })) {
       throw new BadRequestException("Không tìm thấy group question");
     }
     const deleteGQuestion = await this.groupQuestionRepo.softDelete({ id });

@@ -26,6 +26,12 @@ export class GroupQuestionController {
     return this.groupQuestionService.findOne(+id);
   }
 
+  @Get('question/:id')
+  @ResponseMessage("Lấy question của question bằng id")
+  findQuestion(@Param('id') id: string) {
+    return this.groupQuestionService.findQuestion(+id);
+  }
+
   @ResponseMessage("Update group question")
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGroupQuestionDto: UpdateGroupQuestionDto) {
