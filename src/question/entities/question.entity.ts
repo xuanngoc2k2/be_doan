@@ -3,7 +3,7 @@ import { Exam } from 'src/exams/entities/exam.entity';
 import { Group_Question } from 'src/group_question/entities/group_question.entity';
 import { Lesson } from 'src/lesson/entities/lesson.entity';
 import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, LessThan, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, LessThan, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Question {
@@ -13,7 +13,7 @@ export class Question {
     @Column({ nullable: false })
     question: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true, default: 0 })
     level: number;
 
     @Column({ nullable: false })
@@ -24,6 +24,9 @@ export class Question {
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @DeleteDateColumn({ name: 'delete_at' })
+    deleteAt: Date;
 
     @OneToMany(() => Answer, (answer) => answer.question)
     answers: Answer[]
