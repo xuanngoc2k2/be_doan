@@ -78,7 +78,7 @@ export class QuestionService {
     }
 
     // Thực hiện cập nhật câu hỏi
-    const deleteResult = await this.questionRepo.softDelete(id);
+    const deleteResult = await this.questionRepo.softDelete({ id });
 
     // Kiểm tra kết quả cập nhật
     if (deleteResult.affected === 0) {

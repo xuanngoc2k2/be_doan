@@ -28,8 +28,8 @@ export class AnswerService {
     return await this.answerRepo.save(newAnswer);
   }
 
-  findAll() {
-    return `This action returns all answer`;
+  async findAll() {
+    return await this.answerRepo.find({});
   }
 
   findOne(id: number) {
@@ -37,14 +37,28 @@ export class AnswerService {
   }
 
   async update(id: number, updateAnswerDto: UpdateAnswerDto) {
-    const answer = await this.answerRepo.findOne({ where: { id } });
+    const answer = await this.answerRepo
+      .createQueryBuilder('answer')
+      .innerJoinAndSelect('answer.question', 'question')
+      .where('answer.id =:id', { id })
+      .getOne();
+
     if (!answer) {
       throw new NotFoundException("Không tìm thấy câu trả lời");
     }
+    let question = null;
 
-    const question = await this.questionRepo.findOne({ where: { id: updateAnswerDto.questionId } });
+    if (updateAnswerDto.questionId) {
+      question = await this.questionRepo.findOne({ where: { id: updateAnswerDto.questionId } });
+    }
+    else {
+      question = await this.questionRepo.findOne({ where: { id: answer.question.id } });
+    }
+
     const answers = await this.answerRepo.createQueryBuilder('answer')
-      .innerJoin('answer.question', 'question').where('question.id=:id', { id: updateAnswerDto.questionId }).getMany()
+      .innerJoin('answer.question', 'question')
+      .where('question.id=:id', { id: question.id })
+      .getMany()
 
     if (answers.some((answer) => answer.is_true === true) && updateAnswerDto.is_true) {
       throw new BadRequestException("Câu hỏi chỉ có 1 đáp án đúng");
@@ -66,7 +80,7 @@ export class AnswerService {
     if (!answer) {
       throw new NotFoundException("Không tìm thấy câu trả lời");
     }
-    const deleteAnswer = await this.answerRepo.delete({ id });
+    const deleteAnswer = await this.answerRepo.softDelete({ id });
     if (deleteAnswer.affected === 0) {
       throw new BadRequestException("Delete lỗi");
     }
