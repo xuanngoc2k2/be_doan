@@ -8,8 +8,17 @@ export class Result {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     score: number;
+
+    @Column({ nullable: false })
+    userId: number;
+
+    @Column({ nullable: false })
+    examId: number;
+
+    @Column({ nullable: false, default: 0 })
+    count: number;
 
     @CreateDateColumn()
     createdAt: Date;

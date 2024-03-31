@@ -2,19 +2,23 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ResultService } from './result.service';
 import { CreateResultDto } from './dto/create-result.dto';
 import { UpdateResultDto } from './dto/update-result.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('result')
 export class ResultController {
-  constructor(private readonly resultService: ResultService) {}
+  constructor(private readonly resultService: ResultService) { }
 
   @Post()
-  create(@Body() createResultDto: CreateResultDto) {
-    return this.resultService.create(createResultDto);
+  @ResponseMessage("Create new result")
+  create(@Body() createResultDto: CreateResultDto, @User() user: IUser) {
+    return this.resultService.create(createResultDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.resultService.findAll();
+  @ResponseMessage("Get all user's result")
+  findAll(@User() user: IUser) {
+    return this.resultService.findAll(user);
   }
 
   @Get(':id')
