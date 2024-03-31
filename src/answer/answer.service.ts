@@ -17,7 +17,9 @@ export class AnswerService {
   async create(createAnswerDto: CreateAnswerDto) {
     const question = await this.questionRepo.findOne({ where: { id: createAnswerDto.questionId } });
     const answers = await this.answerRepo.createQueryBuilder('answer')
-      .innerJoin('answer.question', 'question').where('question.id=:id', { id: createAnswerDto.questionId }).getMany()
+      .innerJoin('answer.question', 'question').where('question.id=:id', { id: createAnswerDto.questionId }).getMany();
+
+
     if (answers.some((answer) => answer.is_true === true) && createAnswerDto.is_true) {
       throw new BadRequestException("Câu hỏi chỉ có 1 đáp án đúng");
     }
@@ -85,5 +87,20 @@ export class AnswerService {
       throw new BadRequestException("Delete lỗi");
     }
     return { success: true };
+  }
+
+  checkAnswer = async (questionId: number, user_answer: string) => {
+    const question = await this.questionRepo.findOne({ where: { id: questionId } });
+    const answers = await this.answerRepo
+      .createQueryBuilder('answer')
+      .innerJoin('answer.question', 'question')
+      .where('question.id=:id', { id: questionId })
+      .getMany();
+    for (const answer of answers) {
+      if (answer.answer == user_answer && answer.is_true) {
+        return true;
+      }
+    }
+    return false;
   }
 }

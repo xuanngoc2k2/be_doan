@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Result } from './entities/result.entity';
 import { Repository } from 'typeorm';
 import { Exam } from 'src/exams/entities/exam.entity';
+import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
 
 @Injectable()
 export class ResultService {
@@ -13,7 +14,9 @@ export class ResultService {
     @InjectRepository(Result)
     private resultRepo: Repository<Result>,
     @InjectRepository(Exam)
-    private examRepo: Repository<Exam>
+    private examRepo: Repository<Exam>,
+    @InjectRepository(Result_Detail)
+    private resultDetailRepo: Repository<Result_Detail>
   ) { }
   async create(createResultDto: CreateResultDto, user: IUser) {
     const exam = await this.examRepo.findOne({ where: { id: createResultDto.examId } });

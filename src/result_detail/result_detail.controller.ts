@@ -2,13 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ResultDetailService } from './result_detail.service';
 import { CreateResultDetailDto } from './dto/create-result_detail.dto';
 import { UpdateResultDetailDto } from './dto/update-result_detail.dto';
+import { ResponseMessage, User } from 'src/decorator/customize';
+import { QuestionService } from 'src/question/question.service';
 
 @Controller('result-detail')
 export class ResultDetailController {
-  constructor(private readonly resultDetailService: ResultDetailService) {}
+  constructor(private readonly resultDetailService: ResultDetailService,
+    // private readonly questionService: QuestionService
+  ) { }
 
   @Post()
-  create(@Body() createResultDetailDto: CreateResultDetailDto) {
+  @ResponseMessage("Tạo mới Result-detail")
+  create(@Body() createResultDetailDto: CreateResultDetailDto[]) {
     return this.resultDetailService.create(createResultDetailDto);
   }
 

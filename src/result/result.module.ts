@@ -4,9 +4,10 @@ import { ResultController } from './result.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Result } from './entities/result.entity';
 import { Exam } from 'src/exams/entities/exam.entity';
+import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Result, Exam])],
+  imports: [TypeOrmModule.forFeature([Result, Exam, Result_Detail])],
   controllers: [ResultController],
   providers: [ResultService],
 })
