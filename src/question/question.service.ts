@@ -43,6 +43,25 @@ export class QuestionService {
       .getOne();
   }
 
+  async findAnswer(id: number) {
+    if (!await this.questionRepo.findOne({ where: { id } })) {
+      throw new NotFoundException("Không tìm thấy câu hỏi");
+    }
+    const answers = await this.questionRepo
+      .createQueryBuilder('question')
+      .innerJoinAndSelect('question.answers', 'answer')
+      .where('question.id = :id', { id })
+      .select([
+        'question.id',
+        'answer.id',
+        'answer.answer',
+        'answer.explain',
+        'answer.questionId',
+      ])
+      .getMany();
+    return answers;
+  }
+
   async update(id: number, updateQuestionDto: UpdateQuestionDto) {
     const question = await this.questionRepo.findOne({ where: { id } });
     if (!question) {

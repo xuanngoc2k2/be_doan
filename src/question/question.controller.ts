@@ -26,6 +26,12 @@ export class QuestionController {
     return this.questionService.findOne(+id);
   }
 
+  @Post('/answer/:id')
+  @ResponseMessage("Tìm câu trả lời của câu hỏi")
+  findAnswer(@Param('id') id: string) {
+    return this.questionService.findAnswer(+id);
+  }
+
   @Patch(':id')
   @ResponseMessage("Update thông tin câu hỏi theo id")
   update(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
