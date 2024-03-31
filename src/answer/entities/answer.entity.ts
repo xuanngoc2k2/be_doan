@@ -1,5 +1,5 @@
 import { Question } from 'src/question/entities/question.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Answer {
@@ -12,11 +12,14 @@ export class Answer {
     @Column({ nullable: false })
     is_true: boolean;
 
-    @Column({})
+    @Column({ default: null })
     explain: string;
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @DeleteDateColumn({ name: 'delete_at' })
+    deletedAt: Date;
 
     @ManyToOne(() => Question, (question) => question.answers)
     question: Question

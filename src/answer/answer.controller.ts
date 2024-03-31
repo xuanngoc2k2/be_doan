@@ -2,12 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AnswerService } from './answer.service';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
+import { ResponseMessage } from 'src/decorator/customize';
 
 @Controller('answer')
 export class AnswerController {
-  constructor(private readonly answerService: AnswerService) {}
+  constructor(private readonly answerService: AnswerService) { }
 
   @Post()
+  @ResponseMessage("Tạo mới answer")
   create(@Body() createAnswerDto: CreateAnswerDto) {
     return this.answerService.create(createAnswerDto);
   }
