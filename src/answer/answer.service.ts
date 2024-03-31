@@ -36,11 +36,40 @@ export class AnswerService {
     return `This action returns a #${id} answer`;
   }
 
-  update(id: number, updateAnswerDto: UpdateAnswerDto) {
-    return `This action updates a #${id} answer`;
+  async update(id: number, updateAnswerDto: UpdateAnswerDto) {
+    const answer = await this.answerRepo.findOne({ where: { id } });
+    if (!answer) {
+      throw new NotFoundException("Không tìm thấy câu trả lời");
+    }
+
+    const question = await this.questionRepo.findOne({ where: { id: updateAnswerDto.questionId } });
+    const answers = await this.answerRepo.createQueryBuilder('answer')
+      .innerJoin('answer.question', 'question').where('question.id=:id', { id: updateAnswerDto.questionId }).getMany()
+
+    if (answers.some((answer) => answer.is_true === true) && updateAnswerDto.is_true) {
+      throw new BadRequestException("Câu hỏi chỉ có 1 đáp án đúng");
+    }
+
+    if (!question) {
+      throw new NotFoundException("Không tìm thấy câu hỏi");
+    }
+
+    const updateAnswer = await this.answerRepo.update({ id }, { ...updateAnswerDto, is_true: updateAnswerDto.is_true ? true : false, question: question });
+    if (updateAnswer.affected === 0) {
+      throw new BadRequestException("Update lỗi");
+    }
+    return { success: true };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} answer`;
+  async remove(id: number) {
+    const answer = await this.answerRepo.findOne({ where: { id } });
+    if (!answer) {
+      throw new NotFoundException("Không tìm thấy câu trả lời");
+    }
+    const deleteAnswer = await this.answerRepo.delete({ id });
+    if (deleteAnswer.affected === 0) {
+      throw new BadRequestException("Delete lỗi");
+    }
+    return { success: true };
   }
 }

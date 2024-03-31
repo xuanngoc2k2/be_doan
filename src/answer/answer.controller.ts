@@ -25,11 +25,13 @@ export class AnswerController {
   }
 
   @Patch(':id')
+  @ResponseMessage("Update answer")
   update(@Param('id') id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
     return this.answerService.update(+id, updateAnswerDto);
   }
 
   @Delete(':id')
+  @ResponseMessage("Delete answer")
   remove(@Param('id') id: string) {
     return this.answerService.remove(+id);
   }
