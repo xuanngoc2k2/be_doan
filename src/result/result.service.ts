@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateResultDto } from './dto/create-result.dto';
 import { UpdateResultDto } from './dto/update-result.dto';
 import { IUser } from 'src/users/users.interface';
@@ -7,6 +7,7 @@ import { Result } from './entities/result.entity';
 import { Repository } from 'typeorm';
 import { Exam } from 'src/exams/entities/exam.entity';
 import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
+import { ResultDetailService } from 'src/result_detail/result_detail.service';
 
 @Injectable()
 export class ResultService {
@@ -16,8 +17,10 @@ export class ResultService {
     @InjectRepository(Exam)
     private examRepo: Repository<Exam>,
     @InjectRepository(Result_Detail)
-    private resultDetailRepo: Repository<Result_Detail>
+    private resultDetailRepo: Repository<Result_Detail>,
+    private resultDetailService: ResultDetailService
   ) { }
+
   async create(createResultDto: CreateResultDto, user: IUser) {
     const exam = await this.examRepo.findOne({ where: { id: createResultDto.examId } });
     if (!exam) {
@@ -29,6 +32,8 @@ export class ResultService {
     return await this.resultRepo.save(newResult);
   }
 
+
+
   lastCount = async (userId, examId) => {
     const userResult = await this.resultRepo.find({ where: { userId, examId } });
     if (userResult.length == 0) {
@@ -39,6 +44,8 @@ export class ResultService {
     }
   }
 
+
+
   async findAll(user: IUser) {
     return await this.resultRepo.find({ where: { userId: user.id } });
   }
@@ -48,10 +55,26 @@ export class ResultService {
   }
 
   async update(id: number, updateResultDto: UpdateResultDto) {
-    return `This action updates a #${id} result`;
+    const exam = await this.examRepo.findOne({ where: { id: updateResultDto.examId } });
+    if (!exam) {
+      throw new NotFoundException("Không tìm thấy Exam");
+    }
+    const score = await this.resultDetailService.countScore(id);
+    const updateResult = await this.resultRepo.update({ id }, { ...updateResultDto, score })
+    if (updateResult.affected === 0) {
+      throw new BadRequestException("Update lỗi")
+    }
+    return { success: true };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} result`;
+  async remove(id: number) {
+    if (!await this.resultRepo.findOne({ where: { id } })) {
+      throw new NotFoundException("Không tìm thấy result");
+    }
+    const deleteResult = await this.resultRepo.softDelete({ id })
+    if (deleteResult.affected === 0) {
+      throw new BadRequestException("Delete lỗi")
+    }
+    return { success: true };
   }
 }

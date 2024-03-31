@@ -27,10 +27,12 @@ export class ResultController {
   }
 
   @Patch(':id')
+  @ResponseMessage("Update result")
   update(@Param('id') id: string, @Body() updateResultDto: UpdateResultDto) {
     return this.resultService.update(+id, updateResultDto);
   }
 
+  @ResponseMessage("Delete result")
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.resultService.remove(+id);

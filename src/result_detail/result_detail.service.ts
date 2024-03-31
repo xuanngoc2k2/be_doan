@@ -34,7 +34,23 @@ export class ResultDetailService {
       const newRDetail = await this.resultDetailRepo.create({ ...result, is_correct })
       await this.resultDetailRepo.save(newRDetail);
     }
-    return { sucess: true };
+    return { success: true };
+  }
+
+  async countScore(id: number) {
+    const result = await this.resultDetailRepo
+      .createQueryBuilder('result_detail')
+      .innerJoinAndSelect('result_detail.question', 'question')
+      .where('result_detail.resultId = :id', { id })
+      .select(['result_detail.is_correct', 'question.score'])
+      .getMany();
+    let score = 0;
+    result.forEach((rs) => {
+      if (rs.is_correct) {
+        score += rs.question.score
+      }
+    })
+    return score;
   }
 
   findAll() {

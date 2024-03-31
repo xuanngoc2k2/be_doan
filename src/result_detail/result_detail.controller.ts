@@ -8,7 +8,6 @@ import { QuestionService } from 'src/question/question.service';
 @Controller('result-detail')
 export class ResultDetailController {
   constructor(private readonly resultDetailService: ResultDetailService,
-    // private readonly questionService: QuestionService
   ) { }
 
   @Post()

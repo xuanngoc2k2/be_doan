@@ -13,5 +13,6 @@ import { AnswerModule } from 'src/answer/answer.module';
   imports: [TypeOrmModule.forFeature([Result_Detail, Question, Result]), AnswerModule],
   controllers: [ResultDetailController],
   providers: [ResultDetailService],
+  exports: [ResultDetailService]
 })
 export class ResultDetailModule { }

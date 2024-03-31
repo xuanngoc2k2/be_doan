@@ -1,7 +1,7 @@
 import { Exam } from 'src/exams/entities/exam.entity';
 import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Result {
@@ -22,6 +22,9 @@ export class Result {
 
     @CreateDateColumn()
     createdAt: Date;
+
+    @DeleteDateColumn({ name: 'delete_at' })
+    deletedAt: Date;
 
     @ManyToOne(() => Exam, (exam) => exam.results)
     exam: Exam
