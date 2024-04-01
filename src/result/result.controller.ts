@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ResultService } from './result.service';
 import { CreateResultDto } from './dto/create-result.dto';
 import { UpdateResultDto } from './dto/update-result.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Admin, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('result')
@@ -10,6 +10,7 @@ export class ResultController {
   constructor(private readonly resultService: ResultService) { }
 
   @Post()
+  // @Admin()
   @ResponseMessage("Create new result")
   create(@Body() createResultDto: CreateResultDto, @User() user: IUser) {
     return this.resultService.create(createResultDto, user);
