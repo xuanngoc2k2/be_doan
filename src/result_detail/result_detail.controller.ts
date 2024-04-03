@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ResultDetailService } from './result_detail.service';
 import { CreateResultDetailDto } from './dto/create-result_detail.dto';
 import { UpdateResultDetailDto } from './dto/update-result_detail.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Admin, ResponseMessage, User } from 'src/decorator/customize';
 import { QuestionService } from 'src/question/question.service';
 
 @Controller('result-detail')
@@ -12,6 +12,7 @@ export class ResultDetailController {
 
   @Post()
   @ResponseMessage("Tạo mới Result-detail")
+  @Admin()
   create(@Body() createResultDetailDto: CreateResultDetailDto[]) {
     return this.resultDetailService.create(createResultDetailDto);
   }
@@ -27,11 +28,13 @@ export class ResultDetailController {
   }
 
   @Patch(':id')
+  @Admin()
   update(@Param('id') id: string, @Body() updateResultDetailDto: UpdateResultDetailDto) {
     return this.resultDetailService.update(+id, updateResultDetailDto);
   }
 
   @Delete(':id')
+  @Admin()
   remove(@Param('id') id: string) {
     return this.resultDetailService.remove(+id);
   }

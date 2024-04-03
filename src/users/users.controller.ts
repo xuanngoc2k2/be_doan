@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Request } from '@nes
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Public, User } from 'src/decorator/customize';
+import { Admin, Public, User } from 'src/decorator/customize';
 import { use } from 'passport';
 
 @Controller('users')
@@ -31,6 +31,7 @@ export class UsersController {
   }
 
   @Delete(':id')
+  @Admin()
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }

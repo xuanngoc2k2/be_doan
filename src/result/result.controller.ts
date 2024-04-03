@@ -34,6 +34,7 @@ export class ResultController {
   }
 
   @ResponseMessage("Delete result")
+  @Admin()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.resultService.remove(+id);

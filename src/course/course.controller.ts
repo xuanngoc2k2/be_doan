@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { ResponseMessage } from 'src/decorator/customize';
+import { Admin, ResponseMessage } from 'src/decorator/customize';
 
 @Controller('course')
 export class CourseController {
@@ -10,6 +10,7 @@ export class CourseController {
 
   @Post()
   @ResponseMessage("Tạo mới khóa học")
+  @Admin()
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.courseService.create(createCourseDto);
   }
@@ -31,12 +32,14 @@ export class CourseController {
   }
 
   @Put(':id')
+  @Admin()
   @ResponseMessage("Update Course")
   update(@Param('id') id: number, @Body() updateCourseDto: UpdateCourseDto) {
     return this.courseService.update(+id, updateCourseDto);
   }
 
   @Delete(':id')
+  @Admin()
   @ResponseMessage("Delete Course")
   remove(@Param('id') id: string) {
     return this.courseService.remove(+id);

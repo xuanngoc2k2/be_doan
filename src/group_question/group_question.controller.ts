@@ -2,12 +2,13 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { GroupQuestionService } from './group_question.service';
 import { CreateGroupQuestionDto } from './dto/create-group_question.dto';
 import { UpdateGroupQuestionDto } from './dto/update-group_question.dto';
-import { ResponseMessage } from 'src/decorator/customize';
+import { Admin, ResponseMessage } from 'src/decorator/customize';
 
 @Controller('group-question')
 export class GroupQuestionController {
   constructor(private readonly groupQuestionService: GroupQuestionService) { }
 
+  @Admin()
   @Post()
   @ResponseMessage("Tạo mới group question")
   create(@Body() createGroupQuestionDto: CreateGroupQuestionDto) {
@@ -15,6 +16,7 @@ export class GroupQuestionController {
   }
 
   @Get()
+  // @Admin()
   @ResponseMessage("Lấy tất cả group question")
   findAll() {
     return this.groupQuestionService.findAll();
@@ -33,11 +35,13 @@ export class GroupQuestionController {
   }
 
   @ResponseMessage("Update group question")
+  @Admin()
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateGroupQuestionDto: UpdateGroupQuestionDto) {
     return this.groupQuestionService.update(+id, updateGroupQuestionDto);
   }
 
+  @Admin()
   @ResponseMessage("Delete group question")
   @Delete(':id')
   remove(@Param('id') id: string) {

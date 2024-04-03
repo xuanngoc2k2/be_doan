@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { VocabularysService } from './vocabularys.service';
 import { CreateVocabularyDto } from './dto/create-vocabulary.dto';
 import { UpdateVocabularyDto } from './dto/update-vocabulary.dto';
-import { ResponseMessage } from 'src/decorator/customize';
+import { Admin, ResponseMessage } from 'src/decorator/customize';
 
 @Controller('vocabularys')
 export class VocabularysController {
@@ -10,6 +10,7 @@ export class VocabularysController {
 
   @Post()
   @ResponseMessage("Tạo mới từ vựng")
+  @Admin()
   create(@Body() createVocabularyDto: CreateVocabularyDto) {
     return this.vocabularysService.create(createVocabularyDto);
   }
@@ -26,10 +27,12 @@ export class VocabularysController {
   }
 
   @Patch(':id')
+  @Admin()
   update(@Param('id') id: string, @Body() updateVocabularyDto: UpdateVocabularyDto) {
     return this.vocabularysService.update(+id, updateVocabularyDto);
   }
 
+  @Admin()
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.vocabularysService.remove(+id);

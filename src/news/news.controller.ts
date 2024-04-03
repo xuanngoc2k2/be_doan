@@ -2,13 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
-import { Public, ResponseMessage } from 'src/decorator/customize';
+import { Admin, Public, ResponseMessage } from 'src/decorator/customize';
 
 @Controller('news')
 export class NewsController {
   constructor(private readonly newsService: NewsService) { }
 
   @Post()
+  @Admin()
   @ResponseMessage("Tạo mới thông báo")
   create(@Body() createNewsDto: CreateNewsDto) {
     return this.newsService.create(createNewsDto);
@@ -28,12 +29,14 @@ export class NewsController {
   }
 
   @Patch(':id')
+  @Admin()
   @ResponseMessage("Cập nhật thông tin thông báo")
   update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {
     return this.newsService.update(+id, updateNewsDto);
   }
 
   @Delete(':id')
+  @Admin()
   remove(@Param('id') id: string) {
     return this.newsService.remove(+id);
   }

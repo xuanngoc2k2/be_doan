@@ -2,13 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { LessonService } from './lesson.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
-import { Public, ResponseMessage } from 'src/decorator/customize';
+import { Admin, Public, ResponseMessage } from 'src/decorator/customize';
 
 @Controller('lesson')
 export class LessonController {
   constructor(private readonly lessonService: LessonService) { }
 
   @Post()
+  @Admin()
   @ResponseMessage("Tạo mới bài học")
   create(@Body() createLessonDto: CreateLessonDto) {
     return this.lessonService.create(createLessonDto);
@@ -39,12 +40,14 @@ export class LessonController {
     return this.lessonService.getComment(+lessonId);
   }
 
+  @Admin()
   @Patch(':id')
   @ResponseMessage("Cập nhật thông tin bài học")
   update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
     return this.lessonService.update(+id, updateLessonDto);
   }
 
+  @Admin()
   @Delete(':id')
   @ResponseMessage("Xóa bài học")
   remove(@Param('id') id: string) {
