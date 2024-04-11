@@ -1,3 +1,4 @@
+import { ExamGrquestion } from 'src/exam-grquestion/entities/exam-grquestion.entity';
 import { Exam } from 'src/exams/entities/exam.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, LessThan, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
@@ -25,6 +26,9 @@ export class Group_Question {
     @OneToMany(() => Question, (question) => question.group_question)
     questions: Question[]
 
-    @ManyToOne(() => Exam, (exam) => exam.group_questions)
-    exam: Exam
+    // @ManyToOne(() => Exam, (exam) => exam.group_questions)
+    // exam: Exam
+
+    @OneToMany(() => ExamGrquestion, (exam_groupQuestion) => exam_groupQuestion.groupQuestion)
+    exgroupQueston: ExamGrquestion[]
 }

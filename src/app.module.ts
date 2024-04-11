@@ -23,6 +23,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { FileModule } from './file/file.module';
 import { GroupQuestionModule } from './group_question/group_question.module';
+import { ExamGrquestionModule } from './exam-grquestion/exam-grquestion.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { GroupQuestionModule } from './group_question/group_question.module';
     AuthModule,
     FileModule,
     GroupQuestionModule,
+    ExamGrquestionModule,
   ],
   controllers: [AppController],
   providers: [AppService,

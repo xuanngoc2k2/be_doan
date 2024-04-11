@@ -54,4 +54,13 @@ export class GroupQuestionService {
     }
     return { success: true };
   }
+
+  countQuestion = async (groupQuestionId) => {
+    console.log(groupQuestionId)
+    // const countQues = await this.groupQuestionRepo
+    //   .createQueryBuilder('group_question')
+    //   .innerJoinAndSelect('group_question.questions', 'question')
+    //   .getMany()
+    // return countQues;
+  }
 }

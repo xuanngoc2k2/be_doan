@@ -1,4 +1,4 @@
-import { Group_Question } from 'src/group_question/entities/group_question.entity';
+import { ExamGrquestion } from 'src/exam-grquestion/entities/exam-grquestion.entity';
 import { Result } from 'src/result/entities/result.entity';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -22,6 +22,9 @@ export class Exam {
     @Column()
     endAt: Date;
 
+    @Column({ default: 'TOPIK I' })
+    type: string;
+
     @CreateDateColumn()
     createdAt: Date;
 
@@ -29,11 +32,8 @@ export class Exam {
     deleteAt: Date;
 
     @OneToMany(() => Result, (result) => result.exam)
-    results: Result[]
+    results: Result[];
 
-    // @OneToMany(() => Question, (question) => question.exam)
-    // questions: Question[]
-
-    @OneToMany(() => Group_Question, (group_question) => group_question.exam)
-    group_questions: Group_Question[]
+    @OneToMany(() => ExamGrquestion, (examGrquestion) => examGrquestion.exam)
+    examGrquestions: ExamGrquestion[];
 }

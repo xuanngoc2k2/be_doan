@@ -4,12 +4,15 @@ import { UpdateExamDto } from './dto/update-exam.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Exam } from './entities/exam.entity';
 import { Repository } from 'typeorm';
+import { Group_Question } from 'src/group_question/entities/group_question.entity';
+import { ppid } from 'process';
+import { GroupQuestionService } from 'src/group_question/group_question.service';
 
 @Injectable()
 export class ExamsService {
   constructor(
     @InjectRepository(Exam)
-    private examRepo: Repository<Exam>
+    private examRepo: Repository<Exam>,
   ) {
   }
   async create(createExamDto: CreateExamDto) {
@@ -24,8 +27,44 @@ export class ExamsService {
   }
 
   async findAll() {
-    return await this.examRepo.find({});
+    const rs = await this.examRepo
+      .createQueryBuilder('exam')
+      .innerJoinAndSelect('exam.examGrquestions', 'examGrquestions')
+      .innerJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
+      .innerJoinAndSelect('groupQuestion.questions', 'question')
+      .leftJoinAndSelect('exam.results', 'result')
+      .getMany()
+
+    const result = []
+    rs.forEach((exam) => {
+      let countTypeQuestion = exam.examGrquestions.length;
+      let countUser = exam.results.length;
+      let countQuestion = 0;
+      exam.examGrquestions.map((eg) => {
+        countQuestion += eg.groupQuestion.questions.length;
+      })
+      const { examGrquestions, results, ...examWithoutGroupQuestions } = exam
+      result.push({
+        ...examWithoutGroupQuestions, // Lấy các thuộc tính của exam từ phần tử đầu tiên của mảng rs
+        countTypeQuestion,
+        countQuestion,
+        countUser
+      });
+    });
+
+    // const examsWithoutGroupQuestions = rs.map((exam) => {
+    //   const { group_questions, ...examWithoutGroupQuestions } = exam;
+    //   return examWithoutGroupQuestions;
+    // });
+    // rs.map(()=>{
+
+    // })
+
+
+    return result;
+
   }
+
 
   async findOne(id: number) {
     return await this.examRepo.find({ where: { id } });
