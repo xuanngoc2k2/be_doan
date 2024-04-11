@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
-import { Admin, ResponseMessage } from 'src/decorator/customize';
+import { Admin, Public, ResponseMessage, User } from 'src/decorator/customize';
+import { IUser } from 'src/users/users.interface';
 
 @Controller('course')
 export class CourseController {
@@ -11,11 +12,12 @@ export class CourseController {
   @Post()
   @ResponseMessage("Tạo mới khóa học")
   @Admin()
-  create(@Body() createCourseDto: CreateCourseDto) {
+  create(@Body() createCourseDto: CreateCourseDto, @User() user: IUser) {
     return this.courseService.create(createCourseDto);
   }
 
   @Get()
+  @Public()
   @ResponseMessage("Lấy thông tin tất cả khóa học")
   findAll() {
     return this.courseService.findAll();

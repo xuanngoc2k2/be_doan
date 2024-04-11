@@ -8,11 +8,16 @@ import * as cookieParser from 'cookie-parser';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(
     AppModule,
   );
+  app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true, // Nếu bạn cần hỗ trợ đăng nhập từ nguồn khác
+  }));
   const configService = app.get(ConfigService);
   const reflector = app.get(Reflector);
 
@@ -26,6 +31,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'views'));
   app.setViewEngine('ejs')
   app.use(cookieParser());
+
   await app.listen(configService.get<number>("PORT"));
 }
 bootstrap();

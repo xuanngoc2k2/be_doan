@@ -8,7 +8,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(private reflector: Reflector) {
         super();
     }
-
+    requiredRolesAdmin = null;
     canActivate(context: ExecutionContext) {
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
             context.getHandler(),
@@ -23,27 +23,21 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
             context.getHandler(),
             context.getClass(),
         ]);
-        const requiredRolesUser = this.reflector.getAllAndOverride<boolean>(IS_USER, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
+        // const requiredRolesUser = this.reflector.getAllAndOverride<boolean>(IS_USER, [
+        //     context.getHandler(),
+        //     context.getClass(),
+        // ]);
 
         if (requiredRolesAdmin) {
-            // Kiểm tra quyền Admin
-            const request = context.switchToHttp().getRequest();
-            const user = request.user;
-            if (!(user && user.role === 'ADMIN')) {
-                throw new ForbiddenException("Chỉ admin mới được dùng request này");
-            }
-            return true
+            this.requiredRolesAdmin = requiredRolesAdmin
         }
 
-        if (requiredRolesUser) {
-            // Kiểm tra quyền User
-            const request = context.switchToHttp().getRequest();
-            const user = request.user;
-            return user && user.role === 'USER';
-        }
+        // if (requiredRolesUser) {
+        //     // Kiểm tra quyền User
+        //     const request = context.switchToHttp().getRequest();
+        //     const user = request.user;
+        //     return user && user.role === 'USER';
+        // }
 
         return super.canActivate(context);
     }
@@ -52,6 +46,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         // You can throw an exception based on either "info" or "err" arguments
         if (err || !user) {
             throw err || new UnauthorizedException("Token không hợp lệ");
+        }
+        if (this.requiredRolesAdmin) {
+            if (user.role === 'USER') {
+                throw new ForbiddenException("Chỉ admin mới được dùng request này");
+            }
         }
         return user;
     }
