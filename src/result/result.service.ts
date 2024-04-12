@@ -41,6 +41,7 @@ export class ResultService {
         )
       }
     }
+    console.log(createResultDto)
     await this.resultDetailService.create(answers);
     return await this.update(newResult.id, {});
     // const 
@@ -61,11 +62,35 @@ export class ResultService {
 
 
   async findAll(user: IUser) {
-    return await this.resultRepo.find({ where: { userId: user.id } });
+    const rs = await this.resultRepo
+      .createQueryBuilder('result')
+      .innerJoinAndSelect('result.exam', 'exam')
+      .where('result.userId = :id', { id: user.id })
+      .select([
+        'result',
+        'exam.exam_name',
+        'exam.id',
+        'exam.type'
+      ])
+      .orderBy('result.createdAt', 'DESC') // Sắp xếp theo createdAt, DESC để sắp xếp theo thứ tự giảm dần
+      .getMany()
+    return rs;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} result`;
+  async findOne(id: number, user: IUser) {
+    const rs = await this.resultRepo
+      .createQueryBuilder('result')
+      .innerJoinAndSelect('result.exam', 'exam')
+      .where('result.userId = :id AND result.id= :rId', { id: user.id, rId: id })
+      .select([
+        'result',
+        'exam.exam_name',
+        'exam.id',
+        'exam.type'
+      ])
+      .orderBy('result.createdAt', 'DESC') // Sắp xếp theo createdAt, DESC để sắp xếp theo thứ tự giảm dần
+      .getOne()
+    return rs;
   }
 
   async update(id: number, updateResultDto: UpdateResultDto) {

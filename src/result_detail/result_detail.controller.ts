@@ -22,6 +22,12 @@ export class ResultDetailController {
     return this.resultDetailService.findAll();
   }
 
+  @Post('/:resultId')
+  @ResponseMessage("Lấy câu hỏi của exam theo id")
+  findQuestionExamResult(@Param('resultId') resultId: string) {
+    return this.resultDetailService.findQuestionExamResult(+resultId);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.resultDetailService.findOne(+id);

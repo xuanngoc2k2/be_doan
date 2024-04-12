@@ -9,6 +9,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         super();
     }
     requiredRolesAdmin = null;
+    requiredRolesUser = null;
     canActivate(context: ExecutionContext) {
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
             context.getHandler(),
@@ -23,13 +24,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
             context.getHandler(),
             context.getClass(),
         ]);
-        // const requiredRolesUser = this.reflector.getAllAndOverride<boolean>(IS_USER, [
-        //     context.getHandler(),
-        //     context.getClass(),
-        // ]);
 
         if (requiredRolesAdmin) {
             this.requiredRolesAdmin = requiredRolesAdmin
+        }
+        else {
+            this.requiredRolesAdmin = false;
         }
 
         // if (requiredRolesUser) {

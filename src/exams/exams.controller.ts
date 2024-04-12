@@ -29,12 +29,13 @@ export class ExamsController {
     return this.examsService.findOne(+id);
   }
 
-  @Public()
   @Post('/question/:id')
+  // @Public()
   @ResponseMessage("Lấy câu hỏi của exam theo id")
   findQuestionExam(@Param('id') id: string) {
     return this.examsService.findQuestionExam(+id);
   }
+
 
   @Put(':id')
   @Admin()

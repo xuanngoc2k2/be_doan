@@ -8,6 +8,7 @@ import { Question } from 'src/question/entities/question.entity';
 import { Result } from 'src/result/entities/result.entity';
 import { QuestionService } from 'src/question/question.service';
 import { AnswerService } from 'src/answer/answer.service';
+import { Group_Question } from 'src/group_question/entities/group_question.entity';
 
 @Injectable()
 export class ResultDetailService {
@@ -18,7 +19,9 @@ export class ResultDetailService {
     private questionRepo: Repository<Question>,
     @InjectRepository(Result)
     private resultRepo: Repository<Result>,
-    private readonly answerService: AnswerService
+    private readonly answerService: AnswerService,
+    @InjectRepository(Group_Question)
+    private grQRepo: Repository<Group_Question>,
   ) { }
 
   async create(createResultDetailDto: CreateResultDetailDto[]) {
@@ -51,6 +54,32 @@ export class ResultDetailService {
       }
     })
     return score;
+  }
+
+  findQuestionExamResult = async (id: number) => {
+    const rs = await this.grQRepo
+      .createQueryBuilder('group_question')
+      .innerJoinAndSelect('group_question.questions', 'question')
+      .innerJoinAndSelect('question.answers', 'answer')
+      .innerJoinAndSelect('question.result_details', 'result_detail')
+      .where('result_detail.resultId =:id', { id })
+      .select([
+        'group_question.id',
+        'group_question.description',
+        'group_question.content',
+        'group_question.image',
+        'question.id',
+        'question.question',
+        'question.level',
+        'question.type',
+        'question.score',
+        'answer.id',
+        'answer.answer',
+        'answer.is_true',
+        'result_detail'
+      ])
+      .getMany();
+    return rs;
   }
 
   findAll() {

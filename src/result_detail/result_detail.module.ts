@@ -8,9 +8,10 @@ import { Result } from 'src/result/entities/result.entity';
 import { QuestionService } from 'src/question/question.service';
 import { QuestionModule } from 'src/question/question.module';
 import { AnswerModule } from 'src/answer/answer.module';
+import { Group_Question } from 'src/group_question/entities/group_question.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Result_Detail, Question, Result]), AnswerModule],
+  imports: [TypeOrmModule.forFeature([Result_Detail, Question, Result, Group_Question]), AnswerModule],
   controllers: [ResultDetailController],
   providers: [ResultDetailService],
   exports: [ResultDetailService]

@@ -23,8 +23,8 @@ export class ResultController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resultService.findOne(+id);
+  findOne(@Param('id') id: string, @User() user: IUser) {
+    return this.resultService.findOne(+id, user);
   }
 
   @Patch(':id')
