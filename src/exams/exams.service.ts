@@ -25,16 +25,7 @@ export class ExamsService {
     const newExam = await this.examRepo.create({ ...createExamDto });
     return await this.examRepo.save(newExam);
   }
-
-  async findAll() {
-    const rs = await this.examRepo
-      .createQueryBuilder('exam')
-      .innerJoinAndSelect('exam.examGrquestions', 'examGrquestions')
-      .innerJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
-      .innerJoinAndSelect('groupQuestion.questions', 'question')
-      .leftJoinAndSelect('exam.results', 'result')
-      .getMany()
-
+  configResult = (rs) => {
     const result = []
     rs.forEach((exam) => {
       let countTypeQuestion = exam.examGrquestions.length;
@@ -51,6 +42,18 @@ export class ExamsService {
         countUser
       });
     });
+    return result;
+  }
+  async findAll() {
+    const rs = await this.examRepo
+      .createQueryBuilder('exam')
+      .innerJoinAndSelect('exam.examGrquestions', 'examGrquestions')
+      .innerJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
+      .innerJoinAndSelect('groupQuestion.questions', 'question')
+      .leftJoinAndSelect('exam.results', 'result')
+      .getMany()
+
+
 
     // const examsWithoutGroupQuestions = rs.map((exam) => {
     //   const { group_questions, ...examWithoutGroupQuestions } = exam;
@@ -61,14 +64,50 @@ export class ExamsService {
     // })
 
 
-    return result;
+    return this.configResult(rs);
 
   }
 
 
   async findOne(id: number) {
-    return await this.examRepo.find({ where: { id } });
+    const rs = await this.examRepo
+      .createQueryBuilder('exam')
+      .innerJoinAndSelect('exam.examGrquestions', 'examGrquestions')
+      .innerJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
+      .innerJoinAndSelect('groupQuestion.questions', 'question')
+      .leftJoinAndSelect('exam.results', 'result')
+      .where('exam.id = :id', { id })
+      .getMany()
+    return this.configResult(rs)[0];
   }
+
+  findQuestionExam = async (id: number) => {
+    const rs = await this.examRepo
+      .createQueryBuilder('exam')
+      .innerJoinAndSelect('exam.examGrquestions', 'examGrquestions')
+      .innerJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
+      .innerJoinAndSelect('groupQuestion.questions', 'question')
+      .leftJoinAndSelect('question.answers', 'answer')
+      .where('exam.id = :id', { id })
+      .select([
+        'exam.duration',
+        'examGrquestions.groupQuestionId',
+        'groupQuestion.id',
+        'groupQuestion.description',
+        'groupQuestion.content',
+        'groupQuestion.image',
+        'question.id',
+        'question.question',
+        'question.level',
+        'question.type',
+        'question.score',
+        'answer.id',
+        'answer.answer'
+      ])
+      .getOne();
+    return rs;
+  }
+
 
   async update(id: number, updateExamDto: UpdateExamDto) {
     if (!await this.examRepo.findOne({ where: { id } })) {

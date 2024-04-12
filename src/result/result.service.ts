@@ -27,9 +27,23 @@ export class ResultService {
       throw new NotFoundException("Không tìm thấy Exam");
     }
     const count = (await this.lastCount(user.id, exam.id));
-
     const newResult = await this.resultRepo.create({ ...createResultDto, count, user: user, exam })
-    return await this.resultRepo.save(newResult);
+    await this.resultRepo.save(newResult);
+    const answers = [];
+    for (const k in createResultDto.result) {
+      const answer = createResultDto.result[k];
+      for (const key in answer) {
+        answers.push({
+          resultId: newResult.id,
+          questionId: key,
+          user_answer: answer[key]
+        }
+        )
+      }
+    }
+    await this.resultDetailService.create(answers);
+    return await this.update(newResult.id, {});
+    // const 
   }
 
 

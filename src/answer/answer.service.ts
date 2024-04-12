@@ -90,6 +90,18 @@ export class AnswerService {
   }
 
   checkAnswer = async (questionId: number, user_answer: string) => {
+    const answer = await this.answerRepo
+      .createQueryBuilder('answer')
+      .innerJoin('answer.question', 'question')
+      .where('answer.id = :user_answer AND question.id = :questionId', { user_answer, questionId })
+      .getOne();
+
+    if (!answer) {
+      return false; // Không tìm thấy câu trả lời
+    }
+
+    return answer.is_true; // Trả về giá trị của trường is_true
+    return false;
     const question = await this.questionRepo.findOne({ where: { id: questionId } });
     const answers = await this.answerRepo
       .createQueryBuilder('answer')
