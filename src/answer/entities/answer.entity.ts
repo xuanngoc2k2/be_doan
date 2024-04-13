@@ -15,6 +15,9 @@ export class Answer {
     @Column({ default: null })
     explain: string;
 
+    @Column({ default: false })
+    isImage: boolean;
+
     @CreateDateColumn()
     createdAt: Date;
 

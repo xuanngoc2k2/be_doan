@@ -102,7 +102,8 @@ export class ExamsService {
         'question.type',
         'question.score',
         'answer.id',
-        'answer.answer'
+        'answer.answer',
+        'answer.isImage',
       ])
       .getOne();
     return rs;
