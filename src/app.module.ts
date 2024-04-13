@@ -24,6 +24,7 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { FileModule } from './file/file.module';
 import { GroupQuestionModule } from './group_question/group_question.module';
 import { ExamGrquestionModule } from './exam-grquestion/exam-grquestion.module';
+import { ListVocabModule } from './list-vocab/list-vocab.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { ExamGrquestionModule } from './exam-grquestion/exam-grquestion.module';
     FileModule,
     GroupQuestionModule,
     ExamGrquestionModule,
+    ListVocabModule,
   ],
   controllers: [AppController],
   providers: [AppService,

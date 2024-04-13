@@ -1,4 +1,5 @@
 import { Comment } from 'src/comment/entities/comment.entity';
+import { ListVocab } from 'src/list-vocab/entities/list-vocab.entity';
 import { Result } from 'src/result/entities/result.entity';
 import { User_Course } from 'src/user_course/entities/user_course.entity';
 import { User_Lesson } from 'src/user_lesson/entities/user_lesson.entity';
@@ -55,8 +56,11 @@ export class User {
     @OneToMany(() => Comment, (comment) => comment.user)
     comments: Comment[]
 
-    @OneToMany(() => User_Vocabulary, (user_vocabulary) => user_vocabulary.user)
-    user_vocabularys: User_Vocabulary[]
+    @OneToMany(() => ListVocab, (listvob) => listvob.user)
+    listVobs: ListVocab[]
+
+    // @OneToMany(() => User_Vocabulary, (user_vocabulary) => user_vocabulary.user)
+    // user_vocabularys: User_Vocabulary[]
 
     @OneToMany(() => Result, (result) => result.user)
     results: Result[]

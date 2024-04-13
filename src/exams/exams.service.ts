@@ -47,12 +47,12 @@ export class ExamsService {
   async findAll() {
     const rs = await this.examRepo
       .createQueryBuilder('exam')
-      .innerJoinAndSelect('exam.examGrquestions', 'examGrquestions')
-      .innerJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
-      .innerJoinAndSelect('groupQuestion.questions', 'question')
+      .leftJoinAndSelect('exam.examGrquestions', 'examGrquestions')
+      .leftJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
+      .leftJoinAndSelect('groupQuestion.questions', 'question')
       .leftJoinAndSelect('exam.results', 'result')
       .getMany()
-
+    console.log(rs)
 
 
     // const examsWithoutGroupQuestions = rs.map((exam) => {
@@ -72,9 +72,9 @@ export class ExamsService {
   async findOne(id: number) {
     const rs = await this.examRepo
       .createQueryBuilder('exam')
-      .innerJoinAndSelect('exam.examGrquestions', 'examGrquestions')
-      .innerJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
-      .innerJoinAndSelect('groupQuestion.questions', 'question')
+      .leftJoinAndSelect('exam.examGrquestions', 'examGrquestions')
+      .leftJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
+      .leftJoinAndSelect('groupQuestion.questions', 'question')
       .leftJoinAndSelect('exam.results', 'result')
       .where('exam.id = :id', { id })
       .getMany()
@@ -84,9 +84,9 @@ export class ExamsService {
   findQuestionExam = async (id: number) => {
     const rs = await this.examRepo
       .createQueryBuilder('exam')
-      .innerJoinAndSelect('exam.examGrquestions', 'examGrquestions')
-      .innerJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
-      .innerJoinAndSelect('groupQuestion.questions', 'question')
+      .leftJoinAndSelect('exam.examGrquestions', 'examGrquestions')
+      .leftJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
+      .leftJoinAndSelect('groupQuestion.questions', 'question')
       .leftJoinAndSelect('question.answers', 'answer')
       .where('exam.id = :id', { id })
       .select([
