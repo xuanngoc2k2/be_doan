@@ -22,8 +22,8 @@ export class ListVocabController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.listVocabService.findOne(+id);
+  findOne(@Param('id') id: string, @User() user: IUser) {
+    return this.listVocabService.findOne(+id, user);
   }
 
   @Patch(':id')

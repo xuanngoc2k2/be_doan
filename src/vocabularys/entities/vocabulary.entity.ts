@@ -23,6 +23,9 @@ export class Vocabulary {
     level: number;
 
     @Column({ nullable: false })
+    spell: string;
+
+    @Column({ nullable: false })
     partOfSpeech: string;
 
     @CreateDateColumn()

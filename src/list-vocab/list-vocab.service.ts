@@ -61,8 +61,29 @@ export class ListVocabService {
     return this.handleFindList(result);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} listVocab`;
+  async findOne(id: number, user: IUser) {
+    const result = await this.listVobRepo
+      .createQueryBuilder('list_vocab')
+      .leftJoinAndSelect('list_vocab.userVob', 'userVob')
+      .leftJoinAndSelect('userVob.vocabulary', 'vocabulary')
+      .where('list_vocab.id=:id', { id })
+      .getOne()
+    const userVob = result.userVob
+    let totalWords = 0;
+    let needRemember = 0;
+    const vocabs = [];
+    for (const key in userVob) {
+      totalWords += 1;
+      if (userVob[key]['isRemember'] == 0) needRemember += 1
+      vocabs.push(userVob[key]['vocabulary'])
+    }
+
+    return {
+      vocabs,
+      name: result.name,
+      description: result.description,
+      totalWords, needRemember
+    };
   }
 
   update(id: number, updateListVocabDto: UpdateListVocabDto) {
