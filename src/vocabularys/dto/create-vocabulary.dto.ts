@@ -2,10 +2,10 @@ import { IsNotEmpty } from "class-validator";
 
 export class CreateVocabularyDto {
 
-    @IsNotEmpty({ message: "Word không được để trống" })
+    // @IsNotEmpty({ message: "Word không được để trống" })
     word: string;
 
-    @IsNotEmpty({ message: "Meaning không được để trống" })
+    // @IsNotEmpty({ message: "Meaning không được để trống" })
     meaning: string;
 
     image?: string;
@@ -13,4 +13,10 @@ export class CreateVocabularyDto {
     example?: string;
 
     lessonId?: number;
+
+    partOfSpeech: string;
+
+    level: number;
+
+    spell: string;
 }

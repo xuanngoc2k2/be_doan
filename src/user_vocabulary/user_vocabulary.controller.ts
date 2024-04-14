@@ -4,15 +4,16 @@ import { CreateUserVocabularyDto } from './dto/create-user_vocabulary.dto';
 import { UpdateUserVocabularyDto } from './dto/update-user_vocabulary.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
+import { CreateVocabularyDto } from 'src/vocabularys/dto/create-vocabulary.dto';
 
 @Controller('user-vocabulary')
 export class UserVocabularyController {
   constructor(private readonly userVocabularyService: UserVocabularyService) { }
 
-  @Post()
-  @ResponseMessage("Thêm/Lưu từ mới vào yêu thích")
-  create(@Body('vocabularyId') vocabularyId: string, @User() user: IUser) {
-    return this.userVocabularyService.create(+vocabularyId, user);
+  @Post('/:idList')
+  @ResponseMessage("Thêm/Lưu từ mới list")
+  create(@Param('idList') idList, @Body() vocabulary: CreateVocabularyDto, @User() user: IUser) {
+    return this.userVocabularyService.create(idList, vocabulary, user);
   }
 
   @Get()

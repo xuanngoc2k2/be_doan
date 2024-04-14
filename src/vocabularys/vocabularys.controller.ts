@@ -10,7 +10,6 @@ export class VocabularysController {
 
   @Post()
   @ResponseMessage("Tạo mới từ vựng")
-  @Admin()
   create(@Body() createVocabularyDto: CreateVocabularyDto) {
     return this.vocabularysService.create(createVocabularyDto);
   }

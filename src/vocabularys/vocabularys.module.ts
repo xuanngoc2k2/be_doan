@@ -9,5 +9,6 @@ import { Lesson } from 'src/lesson/entities/lesson.entity';
   imports: [TypeOrmModule.forFeature([Vocabulary, Lesson])],
   controllers: [VocabularysController],
   providers: [VocabularysService],
+  exports: [VocabularysService]
 })
 export class VocabularysModule { }

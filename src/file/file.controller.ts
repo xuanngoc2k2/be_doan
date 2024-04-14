@@ -14,16 +14,17 @@ export class FileController {
   @ResponseMessage("Upload ảnh")
   @UseInterceptors(FileInterceptor('file'))
   uploadFile(@UploadedFile(
-    new ParseFilePipeBuilder()
-      .addFileTypeValidator({
-        fileType: /^(jpg|jpeg|png|image\/png|gif)$/i,
-      })
-      .addMaxSizeValidator({
-        maxSize: 1024 * 1024
-      })
-      .build({
-        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
-      }),) file: Express.Multer.File) {
+    // new ParseFilePipeBuilder()
+    //   .addFileTypeValidator({
+    //     fileType: /^(jpg|jpeg|png|image\/png|gif)$/i,
+    //   })
+    //   .addMaxSizeValidator({
+    //     maxSize: 10240 * 1024
+    //   })
+    //   .build({
+    //     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+    //   }),
+  ) file: Express.Multer.File) {
     return { fileName: file.filename }
   }
 

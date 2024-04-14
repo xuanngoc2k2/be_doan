@@ -7,6 +7,8 @@ import { Vocabulary } from 'src/vocabularys/entities/vocabulary.entity';
 import { Repository } from 'typeorm';
 import { User_Vocabulary } from './entities/user_vocabulary.entity';
 import { User } from 'src/decorator/customize';
+import { VocabularysService } from 'src/vocabularys/vocabularys.service';
+import { CreateVocabularyDto } from 'src/vocabularys/dto/create-vocabulary.dto';
 
 @Injectable()
 export class UserVocabularyService {
@@ -14,17 +16,17 @@ export class UserVocabularyService {
     @InjectRepository(Vocabulary)
     private vocabularyRepo: Repository<Vocabulary>,
     @InjectRepository(User_Vocabulary)
-    private userVocabularyRepo: Repository<User_Vocabulary>
+    private userVocabularyRepo: Repository<User_Vocabulary>,
+    private vocabSevice: VocabularysService
   ) {
 
   }
-  async create(vocabularyId: number, user: IUser) {
-    // if (!await this.vocabularyRepo.findOne({ where: { id: vocabularyId } })) {
-    //   throw new NotFoundException("Không tìm thấy từ vựng");
-    // }
-    // const newUVocabulary = await this.userVocabularyRepo.create({ userId: user.id, vocabularyId: vocabularyId });
-    //check đã thêm chưa
-    // return this.userVocabularyRepo.save(newUVocabulary);
+  async create(idList: number, vocabulary: CreateVocabularyDto, user: IUser) {
+    const newVocab = await this.vocabSevice.create(vocabulary);
+    console.log(vocabulary)
+    const newListVob = await this.userVocabularyRepo.create({ isRemember: 0, listVobId: idList, vocabularyId: newVocab.id, vocabulary: newVocab })
+    // check đã thêm chưa
+    return await this.userVocabularyRepo.save(newListVob);
   }
 
   async findAll(user: IUser) {

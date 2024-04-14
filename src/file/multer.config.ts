@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { MulterModuleOptions, MulterOptionsFactory } from "@nestjs/platform-express";
 import * as fs from 'fs';
 import { diskStorage } from "multer";
@@ -46,7 +46,21 @@ export class MulterConfigService implements MulterOptionsFactory {
                     let finalName = `${baseName}-${Date.now()}${extName}`;
                     cb(null, finalName);
                 }
-            })
+            }),
+            fileFilter: (req, file, cb) => {
+                const allowedFileTypes = ['jpg', 'jpeg', 'png', 'gif'];
+                const fileExtension = file.originalname.split('.').pop().toLocaleLowerCase();
+                const isValidFileType = allowedFileTypes.includes(fileExtension);
+                if (!isValidFileType) {
+                    cb(new HttpException('File không đúng định dạng', HttpStatus.UNPROCESSABLE_ENTITY), null);
+                }
+                else {
+                    cb(null, true)
+                }
+            },
+            limits: {
+                fieldSize: 1024 * 1024 * 1
+            }
         };
     }
 }
