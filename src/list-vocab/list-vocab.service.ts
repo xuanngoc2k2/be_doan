@@ -75,7 +75,7 @@ export class ListVocabService {
     for (const key in userVob) {
       totalWords += 1;
       if (userVob[key]['isRemember'] == 0) needRemember += 1
-      vocabs.push(userVob[key]['vocabulary'])
+      vocabs.push({ vocab: userVob[key]['vocabulary'], isRemember: userVob[key]['isRemember'] })
     }
 
     return {

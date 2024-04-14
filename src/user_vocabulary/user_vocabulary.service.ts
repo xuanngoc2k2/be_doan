@@ -51,6 +51,23 @@ export class UserVocabularyService {
     return { success: true };
   }
 
+  async updateRemember(vocabularyId: number, listId: number): Promise<{ success: boolean }> {
+    const vocabulary = await this.vocabularyRepo.findOne({ where: { id: vocabularyId } });
+    if (!vocabulary) {
+      throw new NotFoundException("Không tìm thấy từ vựng");
+    }
+
+    const userVocabulary = await this.userVocabularyRepo.findOne({ where: { listVobId: listId, vocabularyId: vocabularyId } });
+    if (!userVocabulary) {
+      throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
+    }
+
+    const newIsRemember = userVocabulary.isRemember === 0 ? 1 : 0;
+    await this.userVocabularyRepo.update({ listVobId: listId, vocabularyId: vocabularyId }, { isRemember: newIsRemember });
+
+    return { success: true };
+  }
+
   async remove(vocabularyId: number, listId: number) {
     if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
       throw new NotFoundException("Không tìm thấy từ vựng");
