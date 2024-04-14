@@ -54,6 +54,15 @@ export class UserVocabularyController {
     return this.userVocabularyService.updateRemember(+vocabularyId, +listId);
   }
 
+
+  @Post('test/:listId')
+  renderQuestionTes(
+    @Param('listId') listId: string,
+  ) {
+    // Xử lý logic ở đây, sử dụng body để truyền dữ liệu
+    return this.userVocabularyService.renderQuestion(+listId);
+  }
+
   @Delete(':vocabularyId/:listId')
   remove(
     @Param('vocabularyId') vocabularyId: string,

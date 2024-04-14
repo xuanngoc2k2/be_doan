@@ -9,7 +9,6 @@ import { User_Vocabulary } from './entities/user_vocabulary.entity';
 import { User } from 'src/decorator/customize';
 import { VocabularysService } from 'src/vocabularys/vocabularys.service';
 import { CreateVocabularyDto } from 'src/vocabularys/dto/create-vocabulary.dto';
-
 @Injectable()
 export class UserVocabularyService {
   constructor(
@@ -67,7 +66,47 @@ export class UserVocabularyService {
 
     return { success: true };
   }
+  shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
 
+
+  // Chọn ngẫu nhiên 3 nghĩa từ danh sách và lưu thành listQuestion
+  renderQuestion = async (listId: number) => {
+    const listVob = await this.vocabularyRepo
+      .createQueryBuilder('vocabulary')
+      .leftJoinAndSelect('vocabulary.user_vocabularys', 'user_vocabularys')
+      .where('user_vocabularys.listVobId = :id', { id: listId })
+      .select(['vocabulary.id', 'vocabulary.word', 'vocabulary.meaning', 'vocabulary.partOfSpeech', 'vocabulary.spell'])
+      .getMany()
+    const questions = [];
+    listVob.forEach((t) => {
+      const { word, ...meaning } = t;
+      let ans = [word];
+
+      // Tạo một mảng chứa các ý nghĩa ngoại trừ meaning
+      const otherMeanings = listVob.filter(vobs => vobs.word !== word).map(vobs => vobs.word);
+
+      // Xáo trộn mảng otherMeanings
+      this.shuffleArray(otherMeanings);
+
+      // Lấy 3 ý nghĩa ngẫu nhiên từ otherMeanings
+      ans = ans.concat(otherMeanings.slice(0, 3));
+
+      // Xáo trộn mảng ans
+      this.shuffleArray(ans);
+
+      questions.push({
+        meaning,
+        ans,
+        answer: '',
+      });
+    });
+    return { questions };
+  }
   async remove(vocabularyId: number, listId: number) {
     if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
       throw new NotFoundException("Không tìm thấy từ vựng");
