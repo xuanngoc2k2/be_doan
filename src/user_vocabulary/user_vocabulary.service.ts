@@ -51,17 +51,17 @@ export class UserVocabularyService {
     return { success: true };
   }
 
-  async remove(vocabularyId: number, user: IUser) {
-    // if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
-    //   throw new NotFoundException("Không tìm thấy từ vựng");
-    // }
+  async remove(vocabularyId: number, listId: number) {
+    if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
+      throw new NotFoundException("Không tìm thấy từ vựng");
+    }
     // if (!await this.userVocabularyRepo.find({ where: { vocabularyId: vocabularyId, userId: user.id } })) {
     //   throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
     // }
-    // const deleteUVocab = await this.userVocabularyRepo.softDelete({ userId: user.id, vocabularyId: vocabularyId });
-    // if (deleteUVocab.affected === 0) {
-    //   throw new BadRequestException("Delete lỗi");
-    // }
+    const deleteUVocab = await this.userVocabularyRepo.softDelete({ listVobId: listId, vocabularyId: vocabularyId });
+    if (deleteUVocab.affected === 0) {
+      throw new BadRequestException("Delete lỗi");
+    }
     return { success: true };
   }
 }

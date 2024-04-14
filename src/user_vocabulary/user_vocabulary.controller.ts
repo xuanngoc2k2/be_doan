@@ -36,9 +36,22 @@ export class UserVocabularyController {
     return this.userVocabularyService.update(+vocabularyId, +isRemember, user);
   }
 
-  @Delete()
-  remove(@Body('vocabularyId') vocabularyId: string,
-    @User() user: IUser) {
-    return this.userVocabularyService.remove(+vocabularyId, user);
+  @Post('remove/:vocabularyId/:listId')
+  delete(
+    @Param('vocabularyId') vocabularyId: string,
+    @Param('listId') listId: string,
+  ) {
+    // Xử lý logic ở đây, sử dụng body để truyền dữ liệu
+    return this.userVocabularyService.remove(+vocabularyId, +listId);
+  }
+
+  @Delete(':vocabularyId/:listId')
+  remove(
+    @Param('vocabularyId') vocabularyId: string,
+    @Param('listId') listId: string
+    // @Body('vocabularyId') vocabularyId: string,
+    // @Body('listId') listId: string
+  ) {
+    return this.userVocabularyService.remove(+vocabularyId, +listId);
   }
 }
