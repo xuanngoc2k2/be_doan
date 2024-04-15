@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateVocabularyDto } from './dto/create-vocabulary.dto';
+import { Answer, CreateVocabularyDto } from './dto/create-vocabulary.dto';
 import { UpdateVocabularyDto } from './dto/update-vocabulary.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Vocabulary } from './entities/vocabulary.entity';
@@ -63,4 +63,13 @@ export class VocabularysService {
     }
     return { success: true };
   }
+
+  checkAnswer = async (listAnswer: Answer[]) => {
+    const result = await Promise.all(listAnswer.map(async (answer) => {
+      const isMean = await this.vocabularyRepo.findOne({ where: { id: answer.meaning.id } });
+      return { ...answer, anTrue: isMean.word };
+    }));
+    return result;
+  }
+
 }

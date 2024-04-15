@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { VocabularysService } from './vocabularys.service';
-import { CreateVocabularyDto } from './dto/create-vocabulary.dto';
+import { Answer, CreateVocabularyDto } from './dto/create-vocabulary.dto';
 import { UpdateVocabularyDto } from './dto/update-vocabulary.dto';
 import { Admin, ResponseMessage } from 'src/decorator/customize';
 
@@ -13,6 +13,13 @@ export class VocabularysController {
   create(@Body() createVocabularyDto: CreateVocabularyDto) {
     return this.vocabularysService.create(createVocabularyDto);
   }
+
+  @Post('checkResult')
+  @ResponseMessage("Submit result question vocab")
+  checkResult(@Body() listAnswer: Answer[]) {
+    return this.vocabularysService.checkAnswer(listAnswer);
+  }
+
 
   @Get()
   @ResponseMessage("Get all Vocabulary")

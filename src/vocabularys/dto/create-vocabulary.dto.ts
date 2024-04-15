@@ -20,3 +20,18 @@ export class CreateVocabularyDto {
 
     spell: string;
 }
+
+export class Answer {
+
+    meaning: {
+        id: number,
+        meaning: string,
+        spell: string,
+        partOfSpeech: string
+    };
+
+    ans: string[];
+
+    answer: string;
+}
+
