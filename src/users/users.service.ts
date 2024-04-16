@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { ObjectId, Repository } from 'typeorm';
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs'
 import { Request } from 'express';
+import { IUser } from './users.interface';
 @Injectable()
 export class UsersService {
   constructor(
@@ -18,7 +19,9 @@ export class UsersService {
     const hash = hashSync(plaintext, salt);
     return hash;
   }
-
+  // async getInfo(user: IUser){
+  //   const user = await this.userRepo.findOne({where: {id: }})
+  // }
   async register(userDTO: CreateUserDto) {
     if (await this.userRepo.findOne({ where: { username: userDTO.username } })) {
       throw new BadRequestException("Username đã tồn tại !!");
@@ -39,8 +42,10 @@ export class UsersService {
     return this.userRepo.find({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(id: number) {
+    const user = await this.userRepo.findOne({ where: { id } });
+    const { password, role, refreshToken, createdAt, ...info } = user;
+    return info;
   }
 
   findOneByUsername(username: string) {

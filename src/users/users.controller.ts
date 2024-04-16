@@ -4,6 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Admin, Public, User } from 'src/decorator/customize';
 import { use } from 'passport';
+import { IUser } from './users.interface';
 
 @Controller('users')
 export class UsersController {
@@ -18,6 +19,11 @@ export class UsersController {
   @Get()
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @Post('/user')
+  getInfo(@User() user: IUser) {
+    return this.usersService.findOne(user.id);
   }
 
   @Get(':id')
