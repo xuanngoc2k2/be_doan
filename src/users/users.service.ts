@@ -61,8 +61,19 @@ export class UsersService {
   }
 
 
-  update(id: number, user: User) {
-    return `This action updates a #${user.username} user`;
+  async update(id: number, user: User) {
+    const userU = await this.userRepo.findOne({ where: { id } })
+    if (userU) {
+      const upd = await this.userRepo.update({ id }, { ...user });
+      if (upd.affected == 0) {
+        return { success: false }
+      }
+      else {
+        return { success: true }
+      }
+    }
+    return { success: false }
+
   }
 
   remove(id: number) {

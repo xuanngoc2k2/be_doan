@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Admin, Public, User } from 'src/decorator/customize';
 import { use } from 'passport';
 import { IUser } from './users.interface';
+import { User as UserE } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -31,8 +32,8 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @User() user) {
+  @Put(':id')
+  update(@Param('id') id: string, @Body('user') user: UserE) {
     return this.usersService.update(+id, user);
   }
 
