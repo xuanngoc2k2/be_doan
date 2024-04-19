@@ -32,6 +32,11 @@ export class CourseController {
   findOneLikeName(@Body('search') search: string) {
     return this.courseService.findOneLikeName(search);
   }
+  @Post(':id')
+  @Public()
+  getCourseDetail(@Param('id') id: string, @Body('user') user?: IUser) {
+    return this.courseService.getCourseDetail(+id, user);
+  }
 
   @Put(':id')
   @Admin()

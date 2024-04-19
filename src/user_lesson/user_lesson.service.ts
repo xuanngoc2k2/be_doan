@@ -51,7 +51,7 @@ export class UserLessonService {
     if (userLesson.isComplete) {
       throw new BadRequestException("Bài học đã hoàn thành");
     }
-    userLesson.isComplete = 1;
+    userLesson.isComplete = true;
     userLesson.completeAt = new Date();
     return this.userLessonRepo.save(userLesson);
   }

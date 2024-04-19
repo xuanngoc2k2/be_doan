@@ -4,6 +4,7 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './entities/course.entity';
 import { Like, Repository } from 'typeorm';
+import { IUser } from 'src/users/users.interface';
 
 @Injectable()
 export class CourseService {
@@ -34,7 +35,37 @@ export class CourseService {
       }
     });
   }
-
+  getCourseDetail = async (id: number, user?: IUser) => {
+    const result = await this.courseRepo
+      .createQueryBuilder('course')
+      .leftJoinAndSelect('course.lessons', 'lesson')
+      .leftJoinAndSelect('lesson.user_lessons', 'user_lesson')
+      .where("course.id = :id", { id })
+      .orderBy({
+        'lesson.order': 'ASC' // Sắp xếp theo trường orderColumn của bài học (hoặc trường tương ứng)
+      })
+      .getOne()
+    const { lessons, ...rs } = result;
+    const lesson = lessons.map((l) => {
+      const { user_lessons, ...les } = l;
+      let isComplete = false;
+      let currentTime = "0";
+      if (user) {
+        user_lessons.forEach((value) => {
+          if (value.userId == user.id) {
+            isComplete = value.isComplete;
+            currentTime = value.currentTime;
+          }
+        })
+      }
+      return {
+        ...les,
+        isComplete,
+        currentTime
+      }
+    })
+    return { ...rs, lessons: lesson };
+  }
   async update(id: number, updateCourseDto: UpdateCourseDto) {
     const result = await this.courseRepo.update({ id: id }, { ...updateCourseDto });
     if (result.affected === 0) {

@@ -10,8 +10,8 @@ export class User_Lesson {
     @PrimaryColumn()
     lessonId: number;
 
-    @Column({ nullable: false, default: 0 })
-    isComplete: number;
+    @Column({ nullable: false, default: false })
+    isComplete: boolean;
 
     @Column({ nullable: true })
     completeAt: Date;

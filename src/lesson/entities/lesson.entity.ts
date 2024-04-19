@@ -19,6 +19,9 @@ export class Lesson {
     @Column({ type: 'longtext' })
     description: string;
 
+    @Column({ nullable: false })
+    duration: string;
+
     @Column({ default: 0 })
     order: number;
 
