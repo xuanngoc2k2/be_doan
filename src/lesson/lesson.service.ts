@@ -40,7 +40,6 @@ export class LessonService {
       .leftJoinAndSelect('lesson.course', 'course') // Inner join với bảng Course và select các thông tin của Course
       .getMany();
   }
-
   async findOne(id: number) {
     const lesson = await this.lessonRepo.
       createQueryBuilder('lesson').

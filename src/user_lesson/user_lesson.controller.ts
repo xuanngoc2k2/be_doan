@@ -22,8 +22,8 @@ export class UserLessonController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userLessonService.findOne(+id);
+  findOne(@Param('id') id: string, @User() user: IUser) {
+    return this.userLessonService.findOne(+id, user);
   }
 
   @Patch(':id')
@@ -31,6 +31,7 @@ export class UserLessonController {
   update(@Param('id') id: string, @User() user: IUser) {
     return this.userLessonService.update(+id, user);
   }
+
 
   @Put(':id/:time')
   @ResponseMessage("Update thời gian cuối cùng học lesson")

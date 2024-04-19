@@ -34,19 +34,21 @@ export class UserLessonService {
     return this.userLessonRepo.find({ where: { userId: user.id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userLesson`;
+  findOne(id: number, user: IUser) {
+    return this.userLessonRepo.findOne({ where: { userId: user.id, lessonId: id } });;
   }
 
   async update(id: number, user: IUser) {
-    const userLesson = await this.userLessonRepo.findOne({
+    console.log(user, id);
+    let userLesson = await this.userLessonRepo.findOne({
       where: {
         userId: user.id,
         lessonId: id
       }
     });
     if (!userLesson) {
-      throw new Error('Không tìm thấy User_Lesson');
+      userLesson = await this.userLessonRepo.create({ lessonId: id, user });
+      await this.userLessonRepo.save(userLesson)
     }
     if (userLesson.isComplete) {
       throw new BadRequestException("Bài học đã hoàn thành");
@@ -55,6 +57,7 @@ export class UserLessonService {
     userLesson.completeAt = new Date();
     return this.userLessonRepo.save(userLesson);
   }
+
   updateTime = async (id: number, time: string, user: IUser) => {
     const userLesson = await this.userLessonRepo.findOne({
       where: {
