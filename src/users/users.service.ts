@@ -7,6 +7,7 @@ import { ObjectId, Repository } from 'typeorm';
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs'
 import { Request } from 'express';
 import { IUser } from './users.interface';
+import * as bcrypt from 'bcryptjs';
 @Injectable()
 export class UsersService {
   constructor(
@@ -14,11 +15,13 @@ export class UsersService {
     private readonly userRepo: Repository<User>,
   ) { }
 
+
   getHashPassword = (plaintext: string) => {
-    const salt = genSaltSync(10);
-    const hash = hashSync(plaintext, salt);
+    const salt = bcrypt.genSaltSync(10);
+    const hash = bcrypt.hashSync(plaintext, salt);
     return hash;
   }
+
   // async getInfo(user: IUser){
   //   const user = await this.userRepo.findOne({where: {id: }})
   // }
@@ -57,10 +60,32 @@ export class UsersService {
   }
 
   isValidPassword(password: string, hash: string) {
-    return compareSync(password, hash);
+    return bcrypt.compareSync(password, hash);
   }
 
-
+  updatePass = async (pass: string, newPass: string, user: IUser) => {
+    const userF = await this.userRepo.findOne({ where: { id: user.id } })
+    if (!userF) {
+      throw new BadRequestException("Không tìm thấy user");
+    }
+    if (!this.isValidPassword(pass, userF.password)) {
+      return {
+        success: false,
+        message: 'Mật khẩu cũ không đúng'
+      }
+    }
+    const updatePass = await this.userRepo.update({ id: user.id }, { password: this.getHashPassword(newPass) })
+    if (updatePass.affected == 1) {
+      return {
+        success: true,
+        message: "Cập nhật mật khẩu thành công"
+      }
+    }
+    return {
+      success: true,
+      message: "Cập nhật mật khẩu lỗi"
+    }
+  }
   async update(id: number, user: User) {
     const userU = await this.userRepo.findOne({ where: { id } })
     if (userU) {

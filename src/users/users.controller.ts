@@ -32,6 +32,15 @@ export class UsersController {
     return this.usersService.findOne(+id);
   }
 
+  @Post('/updatePass')
+  updatePass(
+    @Body('pass') pass: string,
+    @Body('newPass') newPass: string,
+    @User() user: IUser
+  ) {
+    return this.usersService.updatePass(pass, newPass, user);
+  }
+
   @Put(':id')
   update(@Param('id') id: string, @Body('user') user: UserE) {
     return this.usersService.update(+id, user);
