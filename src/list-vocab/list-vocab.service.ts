@@ -55,9 +55,12 @@ export class ListVocabService {
   async findAll(user: IUser) {
     const result = await this.listVobRepo
       .createQueryBuilder('list_vocab')
+      .leftJoinAndSelect('list_vocab.user', 'user')
       .leftJoinAndSelect('list_vocab.userVob', 'userVob')
       .leftJoinAndSelect('userVob.vocabulary', 'vocabulary')
+      .where('user.id =:id', { id: user.id })
       .getMany();
+    // return result
     return this.handleFindList(result);
   }
 
