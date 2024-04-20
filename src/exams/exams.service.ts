@@ -96,6 +96,7 @@ export class ExamsService {
         'groupQuestion.description',
         'groupQuestion.content',
         'groupQuestion.image',
+        'groupQuestion.type',
         'question.id',
         'question.question',
         'question.level',

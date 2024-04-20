@@ -23,6 +23,9 @@ export class Group_Question {
     @DeleteDateColumn({ name: 'delete_at' })
     deleteAt: Date
 
+    @Column({ nullable: false })
+    type: string;
+
     @OneToMany(() => Question, (question) => question.group_question)
     questions: Question[]
 
