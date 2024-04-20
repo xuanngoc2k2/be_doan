@@ -20,7 +20,26 @@ export class CourseService {
     return await this.courseRepo.save(newCourse);
   }
 
-  findAll() {
+  async findAll(user?: IUser) {
+    if (user) {
+      const courses = await this.courseRepo
+        .createQueryBuilder('course')
+        .leftJoinAndSelect('course.user_courses', 'user_course')
+        // .where('user_course.userId = :id', { id: user.id })
+        .getMany()
+      // const progress = 0;
+      const rs = courses.map((course) => {
+        let progress = 0
+        const { user_courses, ...cour } = course;
+        user_courses.map((u) => {
+          if (u.userId === user.id) {
+            progress = u.progress
+          }
+        })
+        return { ...cour, progress: progress }
+      })
+      return rs;
+    }
     return this.courseRepo.find({});
   }
 

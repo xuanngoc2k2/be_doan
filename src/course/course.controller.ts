@@ -16,11 +16,11 @@ export class CourseController {
     return this.courseService.create(createCourseDto);
   }
 
-  @Get()
+  @Post('/all')
   @Public()
   @ResponseMessage("Lấy thông tin tất cả khóa học")
-  findAll() {
-    return this.courseService.findAll();
+  findAll(@Body('user') user?: IUser) {
+    return this.courseService.findAll(user);
   }
 
   @Get(':id')
@@ -32,6 +32,7 @@ export class CourseController {
   findOneLikeName(@Body('search') search: string) {
     return this.courseService.findOneLikeName(search);
   }
+
   @Post(':id')
   @Public()
   getCourseDetail(@Param('id') id: string, @Body('user') user?: IUser) {
