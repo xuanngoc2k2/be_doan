@@ -46,8 +46,8 @@ export class UserCourseService {
     return this.userCourseRepo.save(newUserCourse);
   }
 
-  updateProgress = (id: number, userId: number) => {
-
+  updateProgress = async (id: number, userId: number, progress: number) => {
+    return await this.userCourseRepo.update({ courseId: id, userId: userId }, { progress })
   }
 
   async findAll(user: IUser) {

@@ -40,6 +40,7 @@ export class LessonService {
       .leftJoinAndSelect('lesson.course', 'course') // Inner join với bảng Course và select các thông tin của Course
       .getMany();
   }
+
   async findOne(id: number) {
     const lesson = await this.lessonRepo.
       createQueryBuilder('lesson').
@@ -71,7 +72,14 @@ export class LessonService {
     return comments;
   }
 
-
+  findCourseId = async (id) => {
+    const idCourse = await this.lessonRepo
+      .createQueryBuilder('lesson')
+      .leftJoinAndSelect('lesson.course', 'course')
+      .where('lesson.id=:id', { id })
+      .getOne()
+    return idCourse.course.id;
+  }
   async update(id: number, updateLessonDto: UpdateLessonDto) {
     if (Number.isNaN(Number(id))) {
       throw new BadRequestException("ID phải là số!!")

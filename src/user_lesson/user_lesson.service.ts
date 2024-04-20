@@ -3,8 +3,9 @@ import { UpdateUserLessonDto } from './dto/update-user_lesson.dto';
 import { IUser } from 'src/users/users.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Lesson } from 'src/lesson/entities/lesson.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User_Lesson } from './entities/user_lesson.entity';
+import { UserCourseService } from 'src/user_course/user_course.service';
 
 @Injectable()
 export class UserLessonService {
@@ -12,7 +13,8 @@ export class UserLessonService {
     @InjectRepository(Lesson)
     private lessonRepo: Repository<Lesson>,
     @InjectRepository(User_Lesson)
-    private userLessonRepo: Repository<User_Lesson>
+    private userLessonRepo: Repository<User_Lesson>,
+    private userCourseService: UserCourseService
   ) { }
   async create(id: number, user: IUser) {
     if (Number.isNaN(id)) {
@@ -39,7 +41,6 @@ export class UserLessonService {
   }
 
   async update(id: number, user: IUser) {
-    console.log(user, id);
     let userLesson = await this.userLessonRepo.findOne({
       where: {
         userId: user.id,
@@ -55,6 +56,28 @@ export class UserLessonService {
     }
     userLesson.isComplete = true;
     userLesson.completeAt = new Date();
+    const idCourse = await this.userLessonRepo
+      .createQueryBuilder('user_lesson')
+      .leftJoinAndSelect('user_lesson.lesson', 'lesson')
+      .leftJoinAndSelect('lesson.course', 'course')
+      .where('lesson.id =:id', { id }).getOne();
+    const totalLessons = await this.lessonRepo
+      .createQueryBuilder('lesson')
+      .leftJoinAndSelect('lesson.course', 'course')
+      .where('course.id=:id', { id: idCourse.lesson.course.id })
+      .getMany();
+
+    // Đếm số lượng bài học đã hoàn thành của người dùng
+    const completedLessons = await this.userLessonRepo
+      .createQueryBuilder('user_lesson')
+      .leftJoinAndSelect('user_lesson.lesson', 'lesson')
+      .leftJoinAndSelect('lesson.course', 'course')
+      .where('course.id =:id and user_lesson.isComplete=1', { id: idCourse.lesson.course.id })
+      .getMany();
+
+    // Tính toán tiến độ
+    const progress = Number(((completedLessons.length + 1) / totalLessons.length) * 100).toFixed(2);
+    await this.userCourseService.updateProgress(idCourse.lesson.course.id, user.id, Number(progress));
     return this.userLessonRepo.save(userLesson);
   }
 
