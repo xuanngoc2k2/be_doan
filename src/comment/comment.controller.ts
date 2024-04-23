@@ -16,6 +16,23 @@ export class CommentController {
     return this.commentService.create(createCommentDto, user);
   }
 
+  @Post('getAllNote')
+  // @UserRole
+  @ResponseMessage("Get All Note")
+  getAllNote(@Body('lessonId') lessonId: number,
+    @User() user: IUser,
+    @Body('isComment') isComment?: boolean
+  ) {
+    return this.commentService.getAllNote(lessonId, user, isComment);
+  }
+
+  // @Post('getAllComment')
+  // // @UserRole
+  // @ResponseMessage("Get All Note")
+  // getAllNote(@Body('lessonId') lessonId: number, @User() user: IUser) {
+  //   return this.commentService.getAllNote(lessonId, user);
+  // }
+
   @Get()
   findAll() {
     return this.commentService.findAll();
@@ -27,8 +44,8 @@ export class CommentController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(+id, updateCommentDto);
+  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto, @User() user: IUser) {
+    return this.commentService.update(+id, updateCommentDto, user);
   }
 
   @Delete(':id')

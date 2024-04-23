@@ -10,7 +10,7 @@ export class Comment {
     @Column({ nullable: false })
     comment: string;
 
-    @Column({ nullable: false, default: '0:00' })
+    @Column({ nullable: true, default: null })
     commentAt: string;
 
     @CreateDateColumn()
