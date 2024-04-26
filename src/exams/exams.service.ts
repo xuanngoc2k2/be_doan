@@ -52,9 +52,6 @@ export class ExamsService {
       .leftJoinAndSelect('groupQuestion.questions', 'question')
       .leftJoinAndSelect('exam.results', 'result')
       .getMany()
-    console.log(rs)
-
-
     // const examsWithoutGroupQuestions = rs.map((exam) => {
     //   const { group_questions, ...examWithoutGroupQuestions } = exam;
     //   return examWithoutGroupQuestions;

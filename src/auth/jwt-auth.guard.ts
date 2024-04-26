@@ -32,13 +32,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
             this.requiredRolesAdmin = false;
         }
 
-        // if (requiredRolesUser) {
-        //     // Kiểm tra quyền User
-        //     const request = context.switchToHttp().getRequest();
-        //     const user = request.user;
-        //     return user && user.role === 'USER';
-        // }
-
         return super.canActivate(context);
     }
 

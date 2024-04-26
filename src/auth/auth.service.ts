@@ -26,14 +26,15 @@ export class AuthService {
 
     //gọi khi login thành công
     async login(user: IUser, response: Response) {
-        const { id, username, email, role } = user;
+        const { id, username, email, role, image } = user;
         const payload = {
             sub: "token login",
             iss: "from server",
             id,
             username,
             email,
-            role
+            role,
+            image
         };
         const refresh_token = this.createRefreshToken(payload);
         await this.usersService.updateRefreshToken(refresh_token, id);
@@ -48,7 +49,8 @@ export class AuthService {
                 id,
                 username,
                 email,
-                role
+                role,
+                image
             }
         };
     }
@@ -66,14 +68,15 @@ export class AuthService {
             })
             let user = await this.usersService.findUserByToken(refresh_token);
             if (user) {
-                const { id, username, email, role } = user;
+                const { id, username, email, role, image } = user;
                 const payload = {
                     sub: "token refresh",
                     iss: "from server",
                     id,
                     username,
                     email,
-                    role
+                    role,
+                    image
                 };
 
 
@@ -91,14 +94,14 @@ export class AuthService {
                         id,
                         username,
                         email,
-                        role
+                        role,
+                        image
                     }
                 };
             }
             else {
                 throw new BadRequestException("Refresh token không hợp lệ. Vui lòng login !!");
             }
-            console.log(user);
         } catch (error) {
             throw new BadRequestException("Refresh token không hợp lệ. Vui lòng login !!");
         }
