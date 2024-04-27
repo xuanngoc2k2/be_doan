@@ -47,13 +47,28 @@ export class CourseService {
     return this.courseRepo.find({ where: { id } });
   }
 
-  async findOneLikeName(search: string) {
+  async findOneLikeName(search: string, level: number[]) {
+    const queryBuilder = this.courseRepo.createQueryBuilder("course");
+
+    // Thêm điều kiện tìm kiếm theo mô tả
+    if (search) {
+      queryBuilder.andWhere("course.description LIKE :search", { search: `%${search}%` });
+    }
+
+    // Thêm điều kiện tìm kiếm theo level_required
+    if (level && level.length > 0) {
+      queryBuilder.andWhere("course.level_required IN (:...level)", { level });
+    }
+
+    // Thực hiện truy vấn và trả về kết quả
+    return await queryBuilder.getMany();
     return this.courseRepo.find({
       where: {
         description: Like(`%${search}%`) // Sử dụng Like và thêm % để tìm kiếm theo một phần của chuỗi
       }
     });
   }
+
   getCourseDetail = async (id: number, user?: IUser) => {
     const result = await this.courseRepo
       .createQueryBuilder('course')

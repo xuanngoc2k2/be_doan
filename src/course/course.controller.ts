@@ -23,14 +23,21 @@ export class CourseController {
     return this.courseService.findAll(user);
   }
 
+  @Get()
+  @Admin()
+  @ResponseMessage("Admin lấy thông tin tất cả khóa học")
+  getAllCourse(@User() user: IUser) {
+    return this.courseService.findAll();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.courseService.findOne(+id);
   }
 
   @Post('/search')
-  findOneLikeName(@Body('search') search: string) {
-    return this.courseService.findOneLikeName(search);
+  findOneLikeName(@Body('search') search: string, @Body('level') level: number[]) {
+    return this.courseService.findOneLikeName(search, level);
   }
 
   @Post(':id')
