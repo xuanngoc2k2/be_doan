@@ -12,6 +12,7 @@ export class CourseService {
     @InjectRepository(Course)
     private readonly courseRepo: Repository<Course>,
   ) { }
+
   async create(createCourseDto: CreateCourseDto) {
     if (!Number.isInteger(Number(createCourseDto.level_required))) {
       throw new BadRequestException("Level Required phải là số nguyên !!")
@@ -101,6 +102,7 @@ export class CourseService {
     return { ...rs, lessons: lesson };
   }
   async update(id: number, updateCourseDto: UpdateCourseDto) {
+    console.log(updateCourseDto)
     const result = await this.courseRepo.update({ id: id }, { ...updateCourseDto });
     if (result.affected === 0) {
       throw new NotFoundException('Không tìm thấy khóa học để cập nhật');
