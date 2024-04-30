@@ -16,7 +16,7 @@ export class GroupQuestionController {
   }
 
   @Get()
-  // @Admin()
+  @Admin()
   @ResponseMessage("Lấy tất cả group question")
   findAll() {
     return this.groupQuestionService.findAll();

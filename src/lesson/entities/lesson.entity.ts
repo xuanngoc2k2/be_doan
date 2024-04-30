@@ -19,7 +19,7 @@ export class Lesson {
     @Column({ type: 'longtext' })
     description: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, default: '0:00' })
     duration: string;
 
     @Column({ default: 0 })
@@ -33,6 +33,9 @@ export class Lesson {
 
     @Column({ nullable: true })
     isQuestion: boolean;
+
+    @Column({ nullable: false })
+    thumbnail: string;
 
     @ManyToOne(() => Course, (course) => course.lessons)
     course: Course

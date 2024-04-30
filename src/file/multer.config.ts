@@ -36,30 +36,49 @@ export class MulterConfigService implements MulterOptionsFactory {
             storage: diskStorage({
                 destination: (req, file, cb) => {
                     const folder = req?.headers?.folder_type ?? "default";
-                    this.ensureExists(`public/images/${folder}`);
-                    cb(null, path.join(this.getRootPath(), `public/images/${folder}`))
+                    if (folder.includes('video')) {
+                        this.ensureExists(`public/video/${folder}`)
+                        cb(null, path.join(this.getRootPath(), `public/video/${folder}`))
+                    }
+                    else {
+                        this.ensureExists(`public/images/${folder}`);
+                        cb(null, path.join(this.getRootPath(), `public/images/${folder}`))
+                    }
                 },
                 filename: (req, file, cb) => {
                     let extName = path.extname(file.originalname);
-
                     let baseName = path.basename(file.originalname, extName);
                     let finalName = `${baseName}-${Date.now()}${extName}`;
                     cb(null, finalName);
                 }
             }),
             fileFilter: (req, file, cb) => {
-                const allowedFileTypes = ['jpg', 'jpeg', 'png', 'gif'];
-                const fileExtension = file.originalname.split('.').pop().toLocaleLowerCase();
-                const isValidFileType = allowedFileTypes.includes(fileExtension);
-                if (!isValidFileType) {
-                    cb(new HttpException('File không đúng định dạng', HttpStatus.UNPROCESSABLE_ENTITY), null);
+                const folder = req?.headers?.folder_type ?? "default";
+                if (folder.includes('video')) {
+                    const allowedFileTypes = ['mp4', 'avi', 'mov'];
+                    const fileExtension = file.originalname.split('.').pop().toLocaleLowerCase();
+                    const isValidFileType = allowedFileTypes.includes(fileExtension);
+                    if (!isValidFileType) {
+                        cb(new HttpException('File không đúng định dạng', HttpStatus.UNPROCESSABLE_ENTITY), null);
+                    }
+                    else {
+                        cb(null, true)
+                    }
                 }
                 else {
-                    cb(null, true)
+                    const allowedFileTypes = ['jpg', 'jpeg', 'png', 'gif'];
+                    const fileExtension = file.originalname.split('.').pop().toLocaleLowerCase();
+                    const isValidFileType = allowedFileTypes.includes(fileExtension);
+                    if (!isValidFileType) {
+                        cb(new HttpException('File không đúng định dạng', HttpStatus.UNPROCESSABLE_ENTITY), null);
+                    }
+                    else {
+                        cb(null, true)
+                    }
                 }
             },
             limits: {
-                fieldSize: 1024 * 1024 * 1
+                fieldSize: 1024 * 1024 * 500
             }
         };
     }

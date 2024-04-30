@@ -58,6 +58,23 @@ export class LessonService {
     return Lessons;
   }
 
+  search = async (search: string, courseId: number) => {
+    const queryBuilder = this.lessonRepo.createQueryBuilder("lesson");
+
+    // Thêm điều kiện tìm kiếm theo mô tả
+    if (search) {
+      queryBuilder.andWhere("lesson.lesson_name LIKE :search", { search: `%${search}%` });
+    }
+
+    // Thêm điều kiện tìm kiếm theo level_required
+    if (courseId && courseId != 0) {
+      queryBuilder.andWhere("lesson.courseId =:courseId", { courseId });
+    }
+
+    // Thực hiện truy vấn và trả về kết quả
+    return await queryBuilder.getMany();
+  }
+
   getComment = async (lessonId: number) => {
     const lesson = await this.lessonRepo.findOne({ where: { id: lessonId } });
     if (!lesson) {

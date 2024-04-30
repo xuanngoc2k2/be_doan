@@ -9,6 +9,24 @@ import { Public, ResponseMessage } from 'src/decorator/customize';
 export class FileController {
   constructor(private readonly fileService: FileService) { }
 
+  @Post('upload-video')
+  @ResponseMessage("Upload video")
+  @UseInterceptors(FileInterceptor('video'))
+  uploadVideo(@UploadedFile(
+    // new ParseFilePipeBuilder()
+    //   .addFileTypeValidator({
+    //     fileType: /^(jpg|jpeg|png|image\/png|gif)$/i,
+    //   })
+    //   .addMaxSizeValidator({
+    //     maxSize: 10240 * 1024
+    //   })
+    //   .build({
+    //     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+    //   }),
+  ) file: Express.Multer.File) {
+    return { fileName: file.filename }
+  }
+
   @Public()
   @Post('upload')
   @ResponseMessage("Upload ảnh")

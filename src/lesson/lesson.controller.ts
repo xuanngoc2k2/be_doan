@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { LessonService } from './lesson.service';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
@@ -34,6 +34,12 @@ export class LessonController {
     return this.lessonService.findLessonByCourse(courseId);
   }
 
+  @Post('/search')
+  @ResponseMessage("Tìm kiếm bài học")
+  searchLesson(@Body('search') search: string, @Body('courseId') courseId?: number) {
+    return this.lessonService.search(search, courseId)
+  }
+
   @Post('/comment')
   @ResponseMessage("Lấy thông tin comment bài học")
   handleGetCommentByLesson(@Body('lessonId') lessonId: string) {
@@ -41,7 +47,7 @@ export class LessonController {
   }
 
   @Admin()
-  @Patch(':id')
+  @Put(':id')
   @ResponseMessage("Cập nhật thông tin bài học")
   update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
     return this.lessonService.update(+id, updateLessonDto);

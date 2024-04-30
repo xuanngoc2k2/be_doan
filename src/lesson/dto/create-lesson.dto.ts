@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, IsInt } from 'class-validator';
+import { Course } from 'src/course/entities/course.entity';
 
 export class CreateLessonDto {
     @IsNotEmpty({ message: 'Tên bài học không được để trống' })
@@ -13,4 +14,12 @@ export class CreateLessonDto {
 
     @IsNotEmpty({ message: 'ID của khóa học không được để trống' })
     courseId: number;
+
+    course?: Course;
+
+    isQuestion: boolean;
+
+    thumbnail: string;
+
+    order: number;
 }

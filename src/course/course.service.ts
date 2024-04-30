@@ -53,7 +53,7 @@ export class CourseService {
 
     // Thêm điều kiện tìm kiếm theo mô tả
     if (search) {
-      queryBuilder.andWhere("course.description LIKE :search", { search: `%${search}%` });
+      queryBuilder.andWhere("course.course_name LIKE :search", { search: `%${search}%` });
     }
 
     // Thêm điều kiện tìm kiếm theo level_required
@@ -102,7 +102,6 @@ export class CourseService {
     return { ...rs, lessons: lesson };
   }
   async update(id: number, updateCourseDto: UpdateCourseDto) {
-    console.log(updateCourseDto)
     const result = await this.courseRepo.update({ id: id }, { ...updateCourseDto });
     if (result.affected === 0) {
       throw new NotFoundException('Không tìm thấy khóa học để cập nhật');
