@@ -15,6 +15,9 @@ export class Group_Question {
     content: string;
 
     @Column({ default: null })
+    audio: string;
+
+    @Column({ default: null })
     image: string;
 
     @CreateDateColumn()

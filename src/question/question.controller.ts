@@ -26,6 +26,13 @@ export class QuestionController {
   findOne(@Param('id') id: string) {
     return this.questionService.findOne(+id);
   }
+  @Post('search')
+  @ResponseMessage("Search câu hỏi")
+  search(@Body('search') search?: string,
+    @Body('groupQuestion') groupQuestion?: number,
+    @Body('type') type?: string) {
+    return this.questionService.searchQuestion(search, groupQuestion, type);
+  }
 
   // @Admin()
   @Post('/answer/:id')

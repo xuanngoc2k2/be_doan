@@ -39,6 +39,7 @@ import { ListVocabModule } from './list-vocab/list-vocab.module';
         port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
+        // collation: "utf8mb4_unicode_ci",
         database: configService.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,

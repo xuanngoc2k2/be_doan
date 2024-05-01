@@ -106,4 +106,26 @@ export class QuestionService {
 
     return { success: true };
   }
+
+  searchQuestion = async (search?: string, groupQuestion?: number, type?: string) => {
+    const queryBuilder = this.questionRepo.createQueryBuilder("question")
+      .leftJoinAndSelect('question.group_question', 'group_question');
+
+    // Thêm điều kiện tìm kiếm theo mô tả
+    if (search) {
+      queryBuilder.andWhere("question.question LIKE :search", { search: `%${search}%` });
+    }
+
+    // Thêm điều kiện tìm kiếm theo level_required
+    if (groupQuestion && groupQuestion != 0) {
+      queryBuilder.andWhere("group_question.id =:Id", { Id: groupQuestion });
+    }
+
+    if (type) {
+      queryBuilder.andWhere("group_question.type =:type", { type });
+    }
+
+    // Thực hiện truy vấn và trả về kết quả
+    return await queryBuilder.getMany();
+  }
 }
