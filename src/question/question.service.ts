@@ -38,8 +38,9 @@ export class QuestionService {
     return await this.questionRepo
       .createQueryBuilder('question')
       .leftJoinAndSelect('question.group_question', 'group_question')
+      .leftJoinAndSelect('question.answers', 'answer')
       .where('question.id = :id', { id: id })
-      .andWhere('question.delete_at IS NULL')
+      // .andWhere('question.delete_at IS NULL')
       .getOne();
   }
 

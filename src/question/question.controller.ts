@@ -22,10 +22,12 @@ export class QuestionController {
   }
 
   @Get(':id')
+  @Admin()
   @ResponseMessage("Lấy thông tin câu hỏi theo id")
   findOne(@Param('id') id: string) {
     return this.questionService.findOne(+id);
   }
+
   @Post('search')
   @ResponseMessage("Search câu hỏi")
   search(@Body('search') search?: string,
