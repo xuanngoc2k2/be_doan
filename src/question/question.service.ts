@@ -6,12 +6,15 @@ import { Question } from './entities/question.entity';
 import { Repository } from 'typeorm';
 import { Group_Question } from 'src/group_question/entities/group_question.entity';
 import { NotFoundError } from 'rxjs';
+import { Answer } from 'src/answer/entities/answer.entity';
 
 @Injectable()
 export class QuestionService {
   constructor(
     @InjectRepository(Question)
     private questionRepo: Repository<Question>,
+    @InjectRepository(Answer)
+    private readonly answerRepository: Repository<Answer>,
     @InjectRepository(Group_Question)
     private groupQuestion: Repository<Group_Question>
   ) { }
@@ -26,6 +29,36 @@ export class QuestionService {
     const newQuestion = await this.questionRepo.create({ ...createQuestionDto, group_question: groupQuestion });
     return await this.questionRepo.save(newQuestion);
   }
+
+
+  createNewQuestion = async (questions: Question[], group: Group_Question) => {
+    try {
+      const foundGroup = await this.groupQuestion.findOne({ where: { id: group.id } });
+      if (!foundGroup) {
+        throw new NotFoundException("Không tìm thấy group question");
+      }
+      const newQuestions: Question[] = [];
+      const newAnswers: Answer[] = [];
+
+      // Tạo các câu hỏi mới
+      for (const q of questions) {
+        const newQuestion = await this.questionRepo.create({ ...q, group_question: foundGroup });
+        const savedQuestion = await this.questionRepo.save(newQuestion);
+        newQuestions.push(savedQuestion);
+
+        // Tạo các câu trả lời mới cho câu hỏi
+        for (const a of q.answers) {
+          const newAnswer = this.answerRepository.create({ ...a, question: savedQuestion });
+          const savedAnswer = await this.answerRepository.save(newAnswer);
+          newAnswers.push(savedAnswer);
+        }
+      }
+      return { newQuestions, newAnswers };
+    } catch (error) {
+      throw new Error("Đã xảy ra lỗi trong quá trình tạo câu hỏi mới: " + error.message);
+    }
+  }
+
 
   async findAll() {
     return await this.questionRepo

@@ -9,7 +9,7 @@ export class CreateQuestionDto {
     // @Max(5, { message: 'Level lớn nhất là 5' })
     level: number;
 
-    @IsIn(['Reading', 'Listening'], { message: 'Type phải là Reading hoặc Listening' })
+    @IsIn(['multiple-choice', 'fill'], { message: 'Type phải là multiple-choice hoặc fill' })
     type: string;
 
     // @IsNumber({}, { message: 'Score phải là số' })

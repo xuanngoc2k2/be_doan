@@ -3,6 +3,8 @@ import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { Admin, ResponseMessage } from 'src/decorator/customize';
+import { Question } from './entities/question.entity';
+import { Group_Question } from 'src/group_question/entities/group_question.entity';
 
 @Controller('question')
 export class QuestionController {
@@ -14,6 +16,14 @@ export class QuestionController {
   create(@Body() createQuestionDto: CreateQuestionDto) {
     return this.questionService.create(createQuestionDto);
   }
+
+  @Admin()
+  @Post('create-new')
+  @ResponseMessage("Tạo mới câu hỏi")
+  createNew(@Body('question') question: Question[], @Body('group_question') group_question: Group_Question) {
+    return this.questionService.createNewQuestion(question, group_question);
+  }
+
 
   @Get()
   @ResponseMessage("Lấy thông tin all câu hỏi")
