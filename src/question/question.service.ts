@@ -33,9 +33,16 @@ export class QuestionService {
 
   createNewQuestion = async (questions: Question[], group: Group_Question) => {
     try {
-      const foundGroup = await this.groupQuestion.findOne({ where: { id: group.id } });
-      if (!foundGroup) {
-        throw new NotFoundException("Không tìm thấy group question");
+      let foundGroup = null;
+      if (group.id) {
+        foundGroup = await this.groupQuestion.findOne({ where: { id: group.id } });
+        if (!foundGroup) {
+          throw new NotFoundException("Không tìm thấy group question");
+        }
+      }
+      else {
+        const newGroup = await this.groupQuestion.create({ ...group });
+        foundGroup = await this.groupQuestion.save(newGroup);
       }
       const newQuestions: Question[] = [];
       const newAnswers: Answer[] = [];

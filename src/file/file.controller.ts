@@ -46,6 +46,25 @@ export class FileController {
     return { fileName: file.filename }
   }
 
+  @Public()
+  @Post('upload-audio')
+  @ResponseMessage("Upload audio")
+  @UseInterceptors(FileInterceptor('audio'))
+  uploadAudio(@UploadedFile(
+    // new ParseFilePipeBuilder()
+    //   .addFileTypeValidator({
+    //     fileType: /^(jpg|jpeg|png|image\/png|gif)$/i,
+    //   })
+    //   .addMaxSizeValidator({
+    //     maxSize: 10240 * 1024
+    //   })
+    //   .build({
+    //     errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY
+    //   }),
+  ) file: Express.Multer.File) {
+    return { fileName: file.filename }
+  }
+
   @Get()
   findAll() {
     return this.fileService.findAll();
