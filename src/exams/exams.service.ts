@@ -46,7 +46,17 @@ export class ExamsService {
       let countUser = exam.results.length;
       let countQuestion = 0;
       exam.examGrquestions.map((eg) => {
-        countQuestion += eg.groupQuestion.questions.length;
+        if (eg.listQuestion) {
+          const listQuestionIds = eg.listQuestion.split(',').map(Number); // Chuyển đổi listQuestion thành mảng các ID câu hỏi
+          eg.groupQuestion.questions.forEach((question) => {
+            if (listQuestionIds.includes(question.id)) {
+              countQuestion++;
+            }
+          });
+        }
+        else {
+          countQuestion += eg.groupQuestion.questions.length;
+        }
       })
       const { examGrquestions, results, ...examWithoutGroupQuestions } = exam
       result.push({
@@ -66,13 +76,7 @@ export class ExamsService {
       .leftJoinAndSelect('groupQuestion.questions', 'question')
       .leftJoinAndSelect('exam.results', 'result')
       .getMany()
-    // const examsWithoutGroupQuestions = rs.map((exam) => {
-    //   const { group_questions, ...examWithoutGroupQuestions } = exam;
-    //   return examWithoutGroupQuestions;
-    // });
-    // rs.map(()=>{
-
-    // })
+    // return rs;
 
 
     return this.configResult(rs);
@@ -81,6 +85,17 @@ export class ExamsService {
 
 
   async findOne(id: number) {
+    const examGr = await this.examGrRepo
+      .createQueryBuilder('examGrquestions')
+      .where('examGrquestions.examId = :examId', { examId: id })
+      .select(['examGrquestions.listQuestion'])
+      .getMany();
+    const listQuestion = [];
+    examGr.map((ls) => {
+      if (ls.listQuestion != '') {
+        listQuestion.push(...ls.listQuestion.split(','));
+      }
+    })
     const rs = await this.examRepo
       .createQueryBuilder('exam')
       .leftJoinAndSelect('exam.examGrquestions', 'examGrquestions')
@@ -88,8 +103,11 @@ export class ExamsService {
       .leftJoinAndSelect('groupQuestion.questions', 'question')
       .leftJoinAndSelect('exam.results', 'result')
       .where('exam.id = :id', { id })
-      .getMany()
-    return this.configResult(rs)[0];
+    if (listQuestion.length !== 0) {
+      rs.andWhere('question.id IN (:...listQuestion)', { listQuestion });
+    }
+    const rss = await rs.getMany();
+    return this.configResult(rss)[0];
   }
 
   findQuestionExam = async (id: number) => {
