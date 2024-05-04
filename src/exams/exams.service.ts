@@ -7,23 +7,37 @@ import { Repository } from 'typeorm';
 import { Group_Question } from 'src/group_question/entities/group_question.entity';
 import { ppid } from 'process';
 import { GroupQuestionService } from 'src/group_question/group_question.service';
+import { ExamGrquestion } from 'src/exam-grquestion/entities/exam-grquestion.entity';
 
 @Injectable()
 export class ExamsService {
   constructor(
     @InjectRepository(Exam)
     private examRepo: Repository<Exam>,
+    @InjectRepository(ExamGrquestion)
+    private examGrRepo: Repository<ExamGrquestion>,
   ) {
   }
-  async create(createExamDto: CreateExamDto) {
-    if (await this.examRepo.findOne({ where: { exam_name: createExamDto.exam_name } })) {
+  async create(exam: Exam, group_questions: Group_Question[]) {
+    if (await this.examRepo.findOne({ where: { exam_name: exam.exam_name } })) {
       throw new BadRequestException("Đã tồn tại bài thi này")
     }
-    if (createExamDto.startAt > createExamDto.endAt) {
+    if (exam.startAt > exam.endAt) {
       throw new BadRequestException("endAt phải sau startAt");
     }
-    const newExam = await this.examRepo.create({ ...createExamDto });
-    return await this.examRepo.save(newExam);
+    const newExam = await this.examRepo.create({ ...exam });
+    await this.examRepo.save(newExam)
+    await Promise.all(group_questions.map(async (group_question) => {
+      const listQuestion = [];
+      if (group_question.id) {
+        group_question.questions.map((question) => {
+          listQuestion.push(question.id);
+        });
+      }
+      await this.examGrRepo.save(await this.examGrRepo.create({ examId: newExam.id, groupQuestionId: group_question.id, listQuestion: listQuestion.toString() }));
+    }));
+
+    return newExam;
   }
   configResult = (rs) => {
     const result = []
@@ -79,16 +93,34 @@ export class ExamsService {
   }
 
   findQuestionExam = async (id: number) => {
+    const examGr = await this.examGrRepo
+      .createQueryBuilder('examGrquestions')
+      .where('examGrquestions.examId = :examId', { examId: id })
+      .select(['examGrquestions.listQuestion'])
+      .getMany();
+    const listQuestion = [];
+    examGr.map((ls) => {
+      if (ls.listQuestion != '') {
+        listQuestion.push(...ls.listQuestion.split(','));
+      }
+    });
     const rs = await this.examRepo
       .createQueryBuilder('exam')
       .leftJoinAndSelect('exam.examGrquestions', 'examGrquestions')
       .leftJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
       .leftJoinAndSelect('groupQuestion.questions', 'question')
       .leftJoinAndSelect('question.answers', 'answer')
-      .where('exam.id = :id', { id })
+      .where('exam.id = :id', { id });
+
+    if (listQuestion.length !== 0) {
+      rs.andWhere('question.id IN (:...listQuestion)', { listQuestion });
+    }
+
+    const result = await rs
       .select([
         'exam.duration',
         'examGrquestions.groupQuestionId',
+        'examGrquestions.listQuestion',
         'groupQuestion.id',
         'groupQuestion.description',
         'groupQuestion.content',
@@ -105,8 +137,22 @@ export class ExamsService {
         'answer.isImage',
       ])
       .getOne();
-    return rs;
+
+    return result;
   }
+
+  searchExam = async (search: string, type?: string) => {
+    const queryBuilder = await this.examRepo.createQueryBuilder('exam')
+    if (search) {
+      queryBuilder.andWhere("exam.exam_name LIKE :search", { search: `%${search}%` });
+    }
+    if (type) {
+      queryBuilder.andWhere('exam.type = :type', { type })
+    }
+    queryBuilder.andWhere("exam.deleted_at IS NULL");
+    return await queryBuilder.getMany();
+  }
+
 
 
   async update(id: number, updateExamDto: UpdateExamDto) {

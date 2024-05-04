@@ -18,7 +18,11 @@ export class GroupQuestionService {
   }
 
   async findAll() {
-    return await this.groupQuestionRepo.find({});
+    return await this.groupQuestionRepo
+      .createQueryBuilder('group-question')
+      .leftJoinAndSelect('group-question.questions', 'question')
+      .leftJoinAndSelect('question.answers', 'answer')
+      .getMany();
   }
 
   async findOne(id: number) {
@@ -34,6 +38,7 @@ export class GroupQuestionService {
   }
 
   async update(id: number, updateGroupQuestionDto: UpdateGroupQuestionDto) {
+    console.log(updateGroupQuestionDto)
     if (!await this.groupQuestionRepo.findOne({ where: { id } })) {
       throw new BadRequestException("Không tìm thấy group question");
     }

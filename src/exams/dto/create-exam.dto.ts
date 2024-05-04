@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsDate, IsNotEmpty } from "class-validator";
+import { IsDate, IsIn, IsNotEmpty } from "class-validator";
 
 export class CreateExamDto {
     @IsNotEmpty({ message: "Tên exam không được để trống" })
@@ -19,4 +19,7 @@ export class CreateExamDto {
     @Transform(({ value }) => new Date(value))
     @IsDate({ message: "endAt có định dạng là Date" })
     endAt: Date;
+
+    @IsIn(['Topik I', 'Topik II', 'EPS'], { message: 'Type phải là Topik I, Topik II hoặc EPS' })
+    type: string;
 }

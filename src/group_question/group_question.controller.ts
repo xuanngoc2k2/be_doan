@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { GroupQuestionService } from './group_question.service';
 import { CreateGroupQuestionDto } from './dto/create-group_question.dto';
 import { UpdateGroupQuestionDto } from './dto/update-group_question.dto';
@@ -36,7 +36,7 @@ export class GroupQuestionController {
 
   @ResponseMessage("Update group question")
   @Admin()
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() updateGroupQuestionDto: UpdateGroupQuestionDto) {
     return this.groupQuestionService.update(+id, updateGroupQuestionDto);
   }

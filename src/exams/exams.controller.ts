@@ -3,6 +3,8 @@ import { ExamsService } from './exams.service';
 import { CreateExamDto } from './dto/create-exam.dto';
 import { UpdateExamDto } from './dto/update-exam.dto';
 import { Admin, Public, ResponseMessage } from 'src/decorator/customize';
+import { Exam } from './entities/exam.entity';
+import { Group_Question } from 'src/group_question/entities/group_question.entity';
 
 @Controller('exams')
 export class ExamsController {
@@ -11,8 +13,8 @@ export class ExamsController {
   @Post()
   @Admin()
   @ResponseMessage("Tạo mới exam")
-  create(@Body() createExamDto: CreateExamDto) {
-    return this.examsService.create(createExamDto);
+  create(@Body('exam') exam: Exam, @Body('group_questions') group_questions: Group_Question[]) {
+    return this.examsService.create(exam, group_questions);
   }
 
   @Get()
@@ -34,6 +36,15 @@ export class ExamsController {
   @ResponseMessage("Lấy câu hỏi của exam theo id")
   findQuestionExam(@Param('id') id: string) {
     return this.examsService.findQuestionExam(+id);
+  }
+
+  @Post('search')
+  // @Public()
+  @ResponseMessage("Tìm kiếm câu hỏi")
+  seachExam(@Body('search') search: string,
+    @Body('type') type: string
+  ) {
+    return this.examsService.searchExam(search, type);
   }
 
 
