@@ -8,6 +8,7 @@ import { ListVocab } from './entities/list-vocab.entity';
 import { User_Vocabulary } from 'src/user_vocabulary/entities/user_vocabulary.entity';
 import { Vocabulary } from 'src/vocabularys/entities/vocabulary.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class ListVocabService {
@@ -16,6 +17,8 @@ export class ListVocabService {
     private listVobRepo: Repository<ListVocab>,
     @InjectRepository(Vocabulary)
     private vocabularyRepo: Repository<Vocabulary>,
+    @InjectRepository(Course)
+    private courseRepo: Repository<Course>,
     @InjectRepository(User)
     private userRepo: Repository<User>
   ) {
@@ -87,6 +90,13 @@ export class ListVocabService {
       description: result.description,
       totalWords, needRemember
     };
+  }
+
+  getVocabWithCourse = async () => {
+    return await this.courseRepo
+      .createQueryBuilder('course')
+      .innerJoinAndSelect('course.vocabularys', 'vocabulary')
+      .getMany();
   }
 
   update(id: number, updateListVocabDto: UpdateListVocabDto) {

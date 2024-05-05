@@ -21,6 +21,12 @@ export class ListVocabController {
     return this.listVocabService.findAll(user);
   }
 
+  @Post('course')
+  @ResponseMessage("Get list vocab with course")
+  getVocabWithCourse() {
+    return this.listVocabService.getVocabWithCourse();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string, @User() user: IUser) {
     return this.listVocabService.findOne(+id, user);

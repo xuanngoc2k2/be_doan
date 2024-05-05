@@ -6,9 +6,10 @@ import { ListVocab } from './entities/list-vocab.entity';
 import { User_Vocabulary } from 'src/user_vocabulary/entities/user_vocabulary.entity';
 import { Vocabulary } from 'src/vocabularys/entities/vocabulary.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Course } from 'src/course/entities/course.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ListVocab, Vocabulary, User])],
+  imports: [TypeOrmModule.forFeature([ListVocab, Vocabulary, User, Course])],
   controllers: [ListVocabController],
   providers: [ListVocabService],
 })

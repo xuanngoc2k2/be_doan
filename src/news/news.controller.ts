@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { CreateNewsDto } from './dto/create-news.dto';
 import { UpdateNewsDto } from './dto/update-news.dto';
@@ -22,13 +22,20 @@ export class NewsController {
     return this.newsService.findAll();
   }
 
+  @Post('search')
+  @Public()
+  @ResponseMessage("Lấy thông tin tất cả thông báo")
+  searchNew(@Body('search') search: string) {
+    return this.newsService.findAll(search);
+  }
+
   @Get(':id')
   @ResponseMessage("Lấy thông tin thông báo")
   findOne(@Param('id') id: string) {
     return this.newsService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @Admin()
   @ResponseMessage("Cập nhật thông tin thông báo")
   update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {

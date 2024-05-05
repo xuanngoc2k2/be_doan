@@ -19,12 +19,17 @@ export class NewsService {
     return await this.newRepo.save(newNews);
   }
 
-  async findAll() {
+  async findAll(search?: string) {
+    if (search) {
+      return await this.newRepo.createQueryBuilder('news')
+        .where('news.content LIKE :search', { search: `%${search}%` })
+        .getMany();
+    }
     return await this.newRepo.find({});
   }
 
   async findOne(id: number) {
-    return await this.newRepo.find({ where: { id } });
+    return await this.newRepo.findOne({ where: { id } });
   }
 
   async update(id: number, updateNewsDto: UpdateNewsDto) {
