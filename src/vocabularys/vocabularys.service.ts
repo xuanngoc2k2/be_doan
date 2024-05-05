@@ -5,31 +5,48 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Vocabulary } from './entities/vocabulary.entity';
 import { Repository } from 'typeorm';
 import { Lesson } from 'src/lesson/entities/lesson.entity';
+import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class VocabularysService {
   constructor(
     @InjectRepository(Vocabulary)
     private vocabularyRepo: Repository<Vocabulary>,
-    @InjectRepository(Lesson)
-    private lessonRepo: Repository<Lesson>
+    @InjectRepository(Course)
+    private courseRepo: Repository<Course>
   ) { }
 
   async create(createVocabularyDto: CreateVocabularyDto) {
-    let lesson = null;
-    if (createVocabularyDto.lessonId) {
-      lesson = await this.lessonRepo.findOne({ where: { id: createVocabularyDto.lessonId } })
+    let course = null;
+    if (createVocabularyDto.courseId) {
+      course = await this.courseRepo.findOne({ where: { id: createVocabularyDto.courseId } })
     }
-    const newVocabulary = await this.vocabularyRepo.create({ ...createVocabularyDto, lesson });
+    const newVocabulary = await this.vocabularyRepo.create({ ...createVocabularyDto, course });
     return await this.vocabularyRepo.save(newVocabulary);
   }
 
-  async findAll() {
-    return await this.vocabularyRepo.find({});
+  async findAll(id?: number, word?: string, meaning?: string, level?: string[]) {
+    const rs = await this.vocabularyRepo.createQueryBuilder('vocabulary')
+      .leftJoinAndSelect('vocabulary.course', 'course')
+    if (id) {
+      rs.where('course.id = :id', { id })
+    }
+    if (word) {
+      rs.andWhere("vocabulary.word LIKE :word", { word: `%${word}%` });
+    }
+    if (meaning) {
+      rs.andWhere("vocabulary.meaning LIKE :meaning", { meaning: `%${meaning}%` });
+    }
+    if (level) {
+      rs.andWhere("vocabulary.level IN (:...level)", { level });
+    }
+    return await rs.getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vocabulary`;
+  async findOne(id: number) {
+    return await this.vocabularyRepo.createQueryBuilder('vocabulary')
+      .leftJoinAndSelect('vocabulary.course', 'course')
+      .where('vocabulary.id = :id', { id }).getOne();
   }
 
   async update(id: number, updateVocabularyDto: UpdateVocabularyDto) {
@@ -38,15 +55,15 @@ export class VocabularysService {
       throw new NotFoundException("Không tìm thấy từ vựng");
     }
 
-    const { lessonId, ...updateVc } = updateVocabularyDto;
-    let lesson = null;
-    if (updateVocabularyDto.lessonId) {
-      lesson = await this.lessonRepo.findOne({ where: { id: updateVocabularyDto.lessonId } });
-      if (!lesson) {
+    const { courseId, ...updateVc } = updateVocabularyDto;
+    let course = null;
+    if (updateVocabularyDto.courseId) {
+      course = await this.courseRepo.findOne({ where: { id: updateVocabularyDto.courseId } });
+      if (!course) {
         throw new NotFoundException("Không tìm thấy bài học");
       }
     }
-    const updateWord = await this.vocabularyRepo.update({ id }, { ...updateVc, lesson });
+    const updateWord = await this.vocabularyRepo.update({ id }, { ...updateVc, course });
     if (updateWord.affected === 0) {
       throw new BadRequestException("Update lỗi");
     }

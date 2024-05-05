@@ -46,9 +46,6 @@ export class Lesson {
     @OneToMany(() => User_Lesson, (user_lesson) => user_lesson.lesson)
     user_lessons: User_Lesson[]
 
-    @OneToMany(() => Vocabulary, (vocabulary) => vocabulary.lesson)
-    vocabularys: Vocabulary[]
-
     @OneToMany(() => Comment, (comment) => comment.lesson)
     comments: Comment[]
 }

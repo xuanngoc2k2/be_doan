@@ -38,7 +38,6 @@ export class GroupQuestionService {
   }
 
   async update(id: number, updateGroupQuestionDto: UpdateGroupQuestionDto) {
-    console.log(updateGroupQuestionDto)
     if (!await this.groupQuestionRepo.findOne({ where: { id } })) {
       throw new BadRequestException("Không tìm thấy group question");
     }

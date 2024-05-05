@@ -1,4 +1,5 @@
 import { IsNotEmpty } from "class-validator";
+import { Course } from "src/course/entities/course.entity";
 
 export class CreateVocabularyDto {
 
@@ -12,13 +13,15 @@ export class CreateVocabularyDto {
 
     example?: string;
 
-    lessonId?: number;
+    courseId?: number;
 
     partOfSpeech: string;
 
     level: number;
 
     spell: string;
+
+    course?: Course;
 }
 
 export class Answer {

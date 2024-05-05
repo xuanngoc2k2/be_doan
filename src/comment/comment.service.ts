@@ -17,7 +17,6 @@ export class CommentService {
   ) { }
 
   async create(createCommentDto: CreateCommentDto, user: IUser) {
-    console.log(createCommentDto);
     const lesson = await this.lessonRepo.findOne({ where: { id: createCommentDto.lessonId } });
     if (lesson === null) {
       throw new BadRequestException("Không tìm thấy bài học");

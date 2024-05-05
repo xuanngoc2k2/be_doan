@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { VocabularysService } from './vocabularys.service';
 import { Answer, CreateVocabularyDto } from './dto/create-vocabulary.dto';
 import { UpdateVocabularyDto } from './dto/update-vocabulary.dto';
@@ -27,12 +27,23 @@ export class VocabularysController {
     return this.vocabularysService.findAll();
   }
 
+  @Post('/search')
+  @ResponseMessage("Get all vocabulary")
+  getAllVocab(
+    @Body('id') id?: number,
+    @Body('word') word?: string,
+    @Body('level') level?: string[],
+    @Body('meaning') meaning?: string,
+  ) {
+    return this.vocabularysService.findAll(id, word, meaning, level);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.vocabularysService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @Admin()
   update(@Param('id') id: string, @Body() updateVocabularyDto: UpdateVocabularyDto) {
     return this.vocabularysService.update(+id, updateVocabularyDto);

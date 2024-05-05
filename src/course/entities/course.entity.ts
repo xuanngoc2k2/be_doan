@@ -1,5 +1,6 @@
 import { Lesson } from 'src/lesson/entities/lesson.entity';
 import { User_Course } from 'src/user_course/entities/user_course.entity';
+import { Vocabulary } from 'src/vocabularys/entities/vocabulary.entity';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -30,4 +31,8 @@ export class Course {
 
     @OneToMany(() => User_Course, (user_course) => user_course.course)
     user_courses: User_Course[]
+
+    @OneToMany(() => Vocabulary, (vocabulary) => vocabulary.course)
+    vocabularys: Vocabulary[]
+
 }
