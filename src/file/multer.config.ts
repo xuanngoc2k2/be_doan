@@ -63,6 +63,7 @@ export class MulterConfigService implements MulterOptionsFactory {
                     const allowedFileTypes = ['mp4', 'avi', 'mov'];
                     const fileExtension = file.originalname.split('.').pop().toLocaleLowerCase();
                     const isValidFileType = allowedFileTypes.includes(fileExtension);
+                    console.log(fileExtension)
                     if (!isValidFileType) {
                         cb(new HttpException('File không đúng định dạng', HttpStatus.UNPROCESSABLE_ENTITY), null);
                     }

@@ -34,6 +34,13 @@ export class GroupQuestionController {
     return this.groupQuestionService.findQuestion(+id);
   }
 
+  @Post('question')
+  @ResponseMessage("Lấy questions của grr question bằng id")
+  findQuestionsById(@Body('idGroup') idGroup: string,
+    @Body('idQuestion') idQuestion: string) {
+    return this.groupQuestionService.findQuestionById(+idGroup, +idQuestion);
+  }
+
   @ResponseMessage("Update group question")
   @Admin()
   @Put(':id')

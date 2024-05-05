@@ -101,6 +101,13 @@ export class CourseService {
     })
     return { ...rs, lessons: lesson };
   }
+
+  getAllCourseWithLesson = async (id: number) => {
+    return await this.courseRepo.createQueryBuilder('course')
+      .leftJoinAndSelect('course.lessons', 'lessons')
+      .where('course.id = :id', { id }).getOne()
+  }
+
   async update(id: number, updateCourseDto: UpdateCourseDto) {
     const result = await this.courseRepo.update({ id: id }, { ...updateCourseDto });
     if (result.affected === 0) {

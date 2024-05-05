@@ -169,4 +169,12 @@ export class QuestionService {
     // Thực hiện truy vấn và trả về kết quả
     return await queryBuilder.getMany();
   }
+
+  checkAnswer = async (id: number, idQues: number) => {
+    const rs = await this.questionRepo.createQueryBuilder("question")
+      .leftJoinAndSelect('question.answers', 'answer')
+      .where('question.id = :idQues and answer.id = :id', { idQues, id })
+      .getOne();
+    return rs.answers[0].is_true;
+  }
 }

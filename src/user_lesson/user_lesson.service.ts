@@ -61,6 +61,7 @@ export class UserLessonService {
       .leftJoinAndSelect('user_lesson.lesson', 'lesson')
       .leftJoinAndSelect('lesson.course', 'course')
       .where('lesson.id =:id', { id }).getOne();
+
     const totalLessons = await this.lessonRepo
       .createQueryBuilder('lesson')
       .leftJoinAndSelect('lesson.course', 'course')

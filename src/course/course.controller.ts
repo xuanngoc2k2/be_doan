@@ -30,6 +30,13 @@ export class CourseController {
     return this.courseService.findAll();
   }
 
+  @Post('allWithLesson/:id')
+  @Admin()
+  @ResponseMessage("Admin lấy thông tin tất cả khóa học bao gồm lessons")
+  getAllCourseWithLesson(@Param('id') id: string, @User() user: IUser) {
+    return this.courseService.getAllCourseWithLesson(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.courseService.findOne(+id);

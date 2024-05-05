@@ -16,7 +16,7 @@ export class Lesson {
     @Column({ nullable: false, type: 'longtext' })
     content: string;
 
-    @Column({ type: 'longtext' })
+    @Column({ type: 'longtext', nullable: true })
     description: string;
 
     @Column({ nullable: false, default: '0:00' })

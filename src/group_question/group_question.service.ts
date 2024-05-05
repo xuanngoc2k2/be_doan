@@ -36,6 +36,15 @@ export class GroupQuestionService {
       .where('group_question.id = :id', { id })
       .getMany();
   }
+  async findQuestionById(idGroup: number, idQuestion) {
+    return await this.groupQuestionRepo
+      .createQueryBuilder('group_question')
+      .innerJoinAndSelect('group_question.questions', 'question')
+      .innerJoinAndSelect('question.answers', 'answer')
+      .where('group_question.id = :id and question.id = :idQ', { id: idGroup, idQ: idQuestion })
+      .select(['group_question', 'question', 'answer.id', 'answer.answer', 'answer.isImage'])
+      .getOne();
+  }
 
   async update(id: number, updateGroupQuestionDto: UpdateGroupQuestionDto) {
     if (!await this.groupQuestionRepo.findOne({ where: { id } })) {

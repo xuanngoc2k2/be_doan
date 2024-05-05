@@ -46,6 +46,12 @@ export class QuestionController {
     return this.questionService.searchQuestion(search, groupQuestion, type);
   }
 
+  @Post('check')
+  @ResponseMessage("Check answer câu hỏi")
+  checkAnswer(@Body('idAns') id?: string, @Body('idQues') idQues?: string) {
+    return this.questionService.checkAnswer(+id, +idQues);
+  }
+
   // @Admin()
   @Post('/answer/:id')
   @ResponseMessage("Tìm câu trả lời của câu hỏi")
