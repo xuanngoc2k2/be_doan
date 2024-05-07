@@ -6,6 +6,9 @@ import { Lesson } from 'src/lesson/entities/lesson.entity';
 import { In, Repository } from 'typeorm';
 import { User_Lesson } from './entities/user_lesson.entity';
 import { UserCourseService } from 'src/user_course/user_course.service';
+import { UsersService } from 'src/users/users.service';
+import { CourseService } from 'src/course/course.service';
+import { LessonService } from 'src/lesson/lesson.service';
 
 @Injectable()
 export class UserLessonService {
@@ -14,7 +17,10 @@ export class UserLessonService {
     private lessonRepo: Repository<Lesson>,
     @InjectRepository(User_Lesson)
     private userLessonRepo: Repository<User_Lesson>,
-    private userCourseService: UserCourseService
+    private userCourseService: UserCourseService,
+    private courseService: CourseService,
+    private userService: UsersService,
+    private lessonService: LessonService
   ) { }
   async create(id: number, user: IUser) {
     if (Number.isNaN(id)) {
@@ -75,7 +81,8 @@ export class UserLessonService {
       .leftJoinAndSelect('lesson.course', 'course')
       .where('course.id =:id and user_lesson.isComplete=1', { id: idCourse.lesson.course.id })
       .getMany();
-
+    if (this.lessonService.checkLastLesson(id))
+      await this.userService.updateLevel(idCourse.lesson.course.level_required, user.id);
     // Tính toán tiến độ
     const progress = Number(((completedLessons.length + 1) / totalLessons.length) * 100).toFixed(2);
     await this.userCourseService.updateProgress(idCourse.lesson.course.id, user.id, Number(progress));

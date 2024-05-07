@@ -89,6 +89,15 @@ export class LessonService {
     return comments;
   }
 
+  checkLastLesson = async (id: number) => {
+    const course = await this.courseRepo.createQueryBuilder('course').leftJoinAndSelect('course.lessons', 'lesson').getOne();
+    const lesson = await this.lessonRepo.findOne({ where: { id } });
+    console.log(course.lessons.length, lesson.order)
+    if (course.lessons.length == lesson.order) {
+      return true;
+    }
+    return false;
+  }
   findCourseId = async (id) => {
     const idCourse = await this.lessonRepo
       .createQueryBuilder('lesson')

@@ -108,4 +108,12 @@ export class UsersService {
   updateRefreshToken = async (refreshToken: string, id: number) => {
     return await this.userRepo.update({ id }, { refreshToken });
   }
+
+  updateLevel = async (level: number, idUser) => {
+    const user = await this.userRepo.findOne({ where: { id: idUser } });
+    if (level > user.level) {
+      return await this.userRepo.update({ id: idUser }, { level: (level + 1) })
+    }
+    return
+  }
 }

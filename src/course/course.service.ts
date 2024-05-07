@@ -45,7 +45,7 @@ export class CourseService {
   }
 
   findOne(id: number) {
-    return this.courseRepo.find({ where: { id } });
+    return this.courseRepo.findOne({ where: { id } });
   }
 
   async findOneLikeName(search: string, level: number[]) {

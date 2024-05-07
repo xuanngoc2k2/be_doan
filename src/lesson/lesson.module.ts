@@ -10,5 +10,6 @@ import { Comment } from 'src/comment/entities/comment.entity';
   imports: [TypeOrmModule.forFeature([Lesson, Course, Comment])],
   controllers: [LessonController],
   providers: [LessonService],
+  exports: [LessonService]
 })
 export class LessonModule { }
