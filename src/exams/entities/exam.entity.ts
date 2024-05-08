@@ -1,4 +1,5 @@
-import { ExamGrquestion } from 'src/exam-grquestion/entities/exam-grquestion.entity';
+// import { ExamGrquestion } from 'src/exam-grquestion/entities/exam-grquestion.entity';
+import { ExamQuestion } from 'src/examquestion/entities/examquestion.entity';
 import { Result } from 'src/result/entities/result.entity';
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -7,7 +8,7 @@ export class Exam {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ nullable: false, unique: true })
+    @Column({ nullable: false })
     exam_name: string;
 
     @Column({ nullable: true })
@@ -34,6 +35,9 @@ export class Exam {
     @OneToMany(() => Result, (result) => result.exam)
     results: Result[];
 
-    @OneToMany(() => ExamGrquestion, (examGrquestion) => examGrquestion.exam)
-    examGrquestions: ExamGrquestion[];
+    // @OneToMany(() => ExamGrquestion, (examGrquestion) => examGrquestion.exam)
+    // examGrquestions: ExamGrquestion[];
+
+    @OneToMany(() => ExamQuestion, (examQuestion) => examQuestion.exam)
+    examQuestions: ExamQuestion[];
 }

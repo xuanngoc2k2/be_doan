@@ -23,8 +23,9 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { FileModule } from './file/file.module';
 import { GroupQuestionModule } from './group_question/group_question.module';
-import { ExamGrquestionModule } from './exam-grquestion/exam-grquestion.module';
+// import { ExamGrquestionModule } from './exam-grquestion/exam-grquestion.module';
 import { ListVocabModule } from './list-vocab/list-vocab.module';
+import { ExamQuestionModule } from './examquestion/examquestion.module';
 
 @Module({
   imports: [
@@ -63,8 +64,9 @@ import { ListVocabModule } from './list-vocab/list-vocab.module';
     AuthModule,
     FileModule,
     GroupQuestionModule,
-    ExamGrquestionModule,
+    // ExamGrquestionModule,
     ListVocabModule,
+    ExamQuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService,

@@ -84,6 +84,17 @@ export class QuestionService {
       .getOne();
   }
 
+  async findOneQuestion(id: number) {
+    return await this.questionRepo
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.group_question', 'group_question')
+      .leftJoinAndSelect('question.answers', 'answer')
+      .where('question.id = :id', { id: id })
+      // .andWhere('question.delete_at IS NULL')
+      .select(['question', 'group_question', 'answer.id', 'answer.answer', 'answer.isImage'])
+      .getOne();
+  }
+
   async findAnswer(id: number) {
     if (!await this.questionRepo.findOne({ where: { id } })) {
       throw new NotFoundException("Không tìm thấy câu hỏi");

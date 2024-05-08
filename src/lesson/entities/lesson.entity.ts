@@ -3,7 +3,7 @@ import { Course } from 'src/course/entities/course.entity';
 import { Question } from 'src/question/entities/question.entity';
 import { User_Lesson } from 'src/user_lesson/entities/user_lesson.entity';
 import { Vocabulary } from 'src/vocabularys/entities/vocabulary.entity';
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Lesson {
@@ -13,7 +13,7 @@ export class Lesson {
     @Column({ nullable: false })
     lesson_name: string;
 
-    @Column({ nullable: false, type: 'longtext' })
+    @Column({ nullable: true, type: 'longtext' })
     content: string;
 
     @Column({ type: 'longtext', nullable: true })
@@ -34,6 +34,9 @@ export class Lesson {
     @Column({ nullable: true })
     isQuestion: boolean;
 
+    @Column({ nullable: true })
+    questionId: number;
+
     @Column({ nullable: false })
     thumbnail: string;
 
@@ -48,4 +51,7 @@ export class Lesson {
 
     @OneToMany(() => Comment, (comment) => comment.lesson)
     comments: Comment[]
+
+    @ManyToOne(() => Question, (question) => question.lessons)
+    question: Question
 }

@@ -38,6 +38,12 @@ export class QuestionController {
     return this.questionService.findOne(+id);
   }
 
+  @Post('detail/:id')
+  @ResponseMessage("Lấy thông tin câu hỏi theo id")
+  findOneQuestion(@Param('id') id: string) {
+    return this.questionService.findOneQuestion(+id);
+  }
+
   @Post('search')
   @ResponseMessage("Search câu hỏi")
   search(@Body('search') search?: string,
