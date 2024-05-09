@@ -24,7 +24,13 @@ export class VocabularysService {
     const newVocabulary = await this.vocabularyRepo.create({ ...createVocabularyDto, course });
     return await this.vocabularyRepo.save(newVocabulary);
   }
-
+  search = async (search: string) => {
+    const rs = await this.vocabularyRepo.createQueryBuilder('vocabulary')
+      .leftJoinAndSelect('vocabulary.course', 'course')
+    if (search) {
+      return await rs.where('vocabulary.word LIKE :word', { word: `%${search}%` }).getOne();
+    }
+  }
   async findAll(id?: number, word?: string, meaning?: string, level?: string[]) {
     const rs = await this.vocabularyRepo.createQueryBuilder('vocabulary')
       .leftJoinAndSelect('vocabulary.course', 'course')
@@ -89,4 +95,17 @@ export class VocabularysService {
     return result;
   }
 
+  getVocabByIdCourse = async (id?: number) => {
+    const rs = await this.courseRepo.createQueryBuilder('course')
+      .leftJoinAndSelect('course.vocabularys', 'vocabulary')
+      .getMany();
+    const result = [];
+    rs.map((course) => {
+      const { vocabularys, ...rss } = course;
+      if (vocabularys.length) {
+        result.push({ ...rss, name: rss.course_name, totalWords: vocabularys.length })
+      }
+    })
+    return result;
+  }
 }

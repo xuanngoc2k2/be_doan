@@ -55,7 +55,23 @@ export class ExamsService {
     return newExam;
   }
 
-  async findAll2() {
+  async findAll2(type?: number) {
+    if (type) {
+      const rs = await this.examRepo
+        .createQueryBuilder('exam')
+        .leftJoinAndSelect('exam.examQuestions', 'exam_question')
+        .leftJoinAndSelect('exam_question.question', 'question')
+        .leftJoinAndSelect('exam.results', 'result')
+        .leftJoinAndSelect('question.group_question', 'group_question');
+      if (type == 1) {
+        rs.where("exam.type = 'TOPIK I'");
+      } else if (type == 2) {
+        rs.where("exam.type = 'TOPIK II'");
+      } else if (type == 3) {
+        rs.where("exam.type = 'EPS'");
+      }
+      return this.configResult2(await rs.getMany());
+    }
     const rs = await this.examRepo
       .createQueryBuilder('exam')
       .leftJoinAndSelect('exam.examQuestions', 'exam_question')

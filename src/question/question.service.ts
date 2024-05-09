@@ -188,4 +188,25 @@ export class QuestionService {
       .getOne();
     return rs.answers[0].is_true;
   }
+
+  Random3Question = async () => {
+    const allQuestions = await this.questionRepo
+      .createQueryBuilder('question')
+      .leftJoinAndSelect('question.group_question', 'group_question')
+      .where("group_question.content = 'Random news'")
+      .leftJoinAndSelect('question.answers', 'answer')
+      .getMany();
+    // Lấy 3 câu hỏi ngẫu nhiên từ tất cả các câu hỏi
+    const randomQuestions = this.shuffleArray(allQuestions).slice(0, 3);
+
+    // Trả về kết quả
+    return randomQuestions;
+  }
+  private shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 }

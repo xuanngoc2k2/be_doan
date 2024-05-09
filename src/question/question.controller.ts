@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { Admin, ResponseMessage } from 'src/decorator/customize';
+import { Admin, Public, ResponseMessage } from 'src/decorator/customize';
 import { Question } from './entities/question.entity';
 import { Group_Question } from 'src/group_question/entities/group_question.entity';
 
@@ -44,6 +44,12 @@ export class QuestionController {
     return this.questionService.findOneQuestion(+id);
   }
 
+  @Post('random')
+  @Public()
+  @ResponseMessage("Random câu hỏi theo ")
+  Random3Question() {
+    return this.questionService.Random3Question();
+  }
   @Post('search')
   @ResponseMessage("Search câu hỏi")
   search(@Body('search') search?: string,

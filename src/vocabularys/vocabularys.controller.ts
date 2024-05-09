@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Search } from '@nestjs/common';
 import { VocabularysService } from './vocabularys.service';
 import { Answer, CreateVocabularyDto } from './dto/create-vocabulary.dto';
 import { UpdateVocabularyDto } from './dto/update-vocabulary.dto';
-import { Admin, ResponseMessage } from 'src/decorator/customize';
+import { Admin, Public, ResponseMessage } from 'src/decorator/customize';
 
 @Controller('vocabularys')
 export class VocabularysController {
@@ -38,6 +38,15 @@ export class VocabularysController {
     return this.vocabularysService.findAll(id, word, meaning, level);
   }
 
+  @Post('userSearch')
+  @Public()
+  @ResponseMessage("Search vocab")
+  getVocab(
+    @Body('search') search?: string,
+  ) {
+    return this.vocabularysService.search(search);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.vocabularysService.findOne(+id);
@@ -47,6 +56,12 @@ export class VocabularysController {
   @Admin()
   update(@Param('id') id: string, @Body() updateVocabularyDto: UpdateVocabularyDto) {
     return this.vocabularysService.update(+id, updateVocabularyDto);
+  }
+
+  @Post('courses')
+  @Public()
+  getAllVocabCourse(@Body('id') id?: number) {
+    return this.vocabularysService.getVocabByIdCourse(id);
   }
 
   @Admin()

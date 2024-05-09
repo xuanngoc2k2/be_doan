@@ -53,6 +53,7 @@ export class CourseController {
     return this.courseService.getCourseDetail(+id, user);
   }
 
+
   @Put(':id')
   @Admin()
   @ResponseMessage("Update Course")

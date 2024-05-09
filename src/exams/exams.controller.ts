@@ -32,6 +32,15 @@ export class ExamsController {
     return this.examsService.findAll2();
   }
 
+  @Post('type')
+  @Public()
+  @ResponseMessage("Lấy tất cả exam theo loại")
+  getExam(
+    @Body('type') type: string
+  ) {
+    return this.examsService.findAll2(+type);
+  }
+
   @Post('/test')
   @Public()
   @ResponseMessage("Lấy tất cả exam 2")

@@ -6,8 +6,6 @@ export class CreateLessonDto {
     @IsString({ message: 'Tên bài học phải là chuỗi' })
     lesson_name: string;
 
-    @IsNotEmpty({ message: 'Nội dung bài học không được để trống' })
-    @IsString({ message: 'Nội dung bài học phải là chuỗi' })
     content: string;
 
     description: string;
@@ -22,4 +20,6 @@ export class CreateLessonDto {
     thumbnail: string;
 
     order: number;
+
+    questionId: number;
 }

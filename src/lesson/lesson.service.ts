@@ -45,6 +45,8 @@ export class LessonService {
     const lesson = await this.lessonRepo.
       createQueryBuilder('lesson').
       innerJoinAndSelect('lesson.course', 'course')
+      .leftJoinAndSelect('lesson.question', 'question')
+      .leftJoinAndSelect('question.group_question', 'group_question')
       .where('lesson.id = :id', { id }) // Chỉ định điều kiện tìm kiếm bằng ID
       .getOne();
     return lesson;

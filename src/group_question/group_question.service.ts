@@ -50,7 +50,8 @@ export class GroupQuestionService {
     if (!await this.groupQuestionRepo.findOne({ where: { id } })) {
       throw new BadRequestException("Không tìm thấy group question");
     }
-    const updateGQuestion = await this.groupQuestionRepo.update({ id }, { ...updateGroupQuestionDto });
+    const { questions, ...update } = updateGroupQuestionDto;
+    const updateGQuestion = await this.groupQuestionRepo.update({ id }, { ...update });
     if (updateGQuestion.affected === 0) {
       throw new BadRequestException("Update lỗi");
     }
