@@ -25,19 +25,20 @@ export class UsersService {
   // async getInfo(user: IUser){
   //   const user = await this.userRepo.findOne({where: {id: }})
   // }
-  async register(userDTO: CreateUserDto) {
+  async register(userDTO: CreateUserDto): Promise<User | { id: number, username: string, success: false, message: string }> {
     if (await this.userRepo.findOne({ where: { username: userDTO.username } })) {
       throw new BadRequestException("Username đã tồn tại !!");
     }
     else if (await this.userRepo.findOne({ where: { email: userDTO.email } })) {
       throw new BadRequestException("Email đã tồn tại !!");
     }
-    else if (userDTO.phone_number != "" && await this.userRepo.findOne({ where: { phone_number: userDTO.phone_number } })) {
+    else if (userDTO.phone_number !== "" && await this.userRepo.findOne({ where: { phone_number: userDTO.phone_number } })) {
       throw new BadRequestException("Số điện thoại đã tồn tại !!");
     }
+
     const hashPassword = this.getHashPassword(userDTO.password);
-    let { password, ...user } = userDTO;
-    let newUser = this.userRepo.create({ password: hashPassword, ...user });
+    const { password, ...userData } = userDTO;
+    const newUser = this.userRepo.create({ password: hashPassword, ...userData });
     return await this.userRepo.save(newUser);
   }
 

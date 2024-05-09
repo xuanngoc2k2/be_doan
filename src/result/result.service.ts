@@ -117,4 +117,14 @@ export class ResultService {
     }
     return { success: true };
   }
+
+  findRanking = async () => {
+    return await this.resultRepo
+      .createQueryBuilder('result')
+      .leftJoinAndSelect('result.user', 'user')
+      .select(['result', 'user.id', 'user.image', 'user.full_name'])
+      .orderBy('result.score', 'DESC')
+      .take(10)
+      .getMany();
+  }
 }

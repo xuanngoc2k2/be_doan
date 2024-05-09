@@ -27,6 +27,11 @@ export class ResultController {
     return this.resultService.findOne(+id, user);
   }
 
+  @Post('ranking')
+  ranking() {
+    return this.resultService.findRanking();
+  }
+
   @Patch(':id')
   @ResponseMessage("Update result")
   update(@Param('id') id: string, @Body() updateResultDto: UpdateResultDto) {

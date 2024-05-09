@@ -58,7 +58,7 @@ export class AuthService {
         let a = await this.usersService.register(user);
         return {
             id: a?.id,
-            username: a?.username
+            username: a?.username,
         }
     }
     refreshNewToken = async (refresh_token: string, response) => {
