@@ -42,8 +42,13 @@ export class UsersService {
     return await this.userRepo.save(newUser);
   }
 
-  findAll() {
-    return this.userRepo.find({});
+  async findAll() {
+    const rs = await this.userRepo.find({});
+    const result = rs.map((r) => {
+      const { password, ...a } = r;
+      return { ...a }
+    })
+    return result
   }
 
   async findOne(id: number) {

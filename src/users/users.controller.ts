@@ -18,6 +18,7 @@ export class UsersController {
   // }
 
   @Get()
+  @Admin()
   findAll() {
     return this.usersService.findAll();
   }

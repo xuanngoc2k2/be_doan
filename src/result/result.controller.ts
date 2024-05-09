@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { ResultService } from './result.service';
 import { CreateResultDto } from './dto/create-result.dto';
 import { UpdateResultDto } from './dto/update-result.dto';
-import { Admin, ResponseMessage, User } from 'src/decorator/customize';
+import { Admin, Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('result')
@@ -28,6 +28,7 @@ export class ResultController {
   }
 
   @Post('ranking')
+  @Public()
   ranking() {
     return this.resultService.findRanking();
   }
