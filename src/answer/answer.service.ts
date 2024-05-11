@@ -34,8 +34,8 @@ export class AnswerService {
     return await this.answerRepo.find({});
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} answer`;
+  async findOne(id: number) {
+    return await this.answerRepo.findOne({ where: { id } });
   }
 
   async update(id: number, updateAnswerDto: UpdateAnswerDto) {

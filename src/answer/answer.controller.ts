@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { AnswerService } from './answer.service';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { UpdateAnswerDto } from './dto/update-answer.dto';
@@ -27,7 +27,7 @@ export class AnswerController {
     return this.answerService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @Admin()
   @ResponseMessage("Update answer")
   update(@Param('id') id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
