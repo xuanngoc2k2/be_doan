@@ -39,38 +39,35 @@ export class AnswerService {
   }
 
   async update(id: number, updateAnswerDto: UpdateAnswerDto) {
-    const answer = await this.answerRepo
-      .createQueryBuilder('answer')
-      .innerJoinAndSelect('answer.question', 'question')
-      .where('answer.id =:id', { id })
-      .getOne();
-
+    const answer = await this.answerRepo.findOne({ where: { id } })
+    console.log(updateAnswerDto);
     if (!answer) {
       throw new NotFoundException("Không tìm thấy câu trả lời");
     }
-    let question = null;
+    // let question = null;
 
-    if (updateAnswerDto.questionId) {
-      question = await this.questionRepo.findOne({ where: { id: updateAnswerDto.questionId } });
-    }
-    else {
-      question = await this.questionRepo.findOne({ where: { id: answer.question.id } });
-    }
+    // if (updateAnswerDto.questionId) {
+    //   question = await this.questionRepo.findOne({ where: { id: updateAnswerDto.questionId } });
+    // }
+    // else {
+    //   question = await this.questionRepo.findOne({ where: { id: answer.question.id } });
+    // }
 
-    const answers = await this.answerRepo.createQueryBuilder('answer')
-      .innerJoin('answer.question', 'question')
-      .where('question.id=:id', { id: question.id })
-      .getMany()
+    // const answers = await this.answerRepo.createQueryBuilder('answer')
+    //   .innerJoin('answer.question', 'question')
+    //   .where('question.id=:id', { id: question.id })
+    //   .getMany()
 
-    if (answers.some((answer) => answer.is_true === true) && updateAnswerDto.is_true) {
-      throw new BadRequestException("Câu hỏi chỉ có 1 đáp án đúng");
-    }
+    // if (answers.some((answer) => answer.is_true === true) && updateAnswerDto.is_true) {
+    //   throw new BadRequestException("Câu hỏi chỉ có 1 đáp án đúng");
+    // }
 
-    if (!question) {
-      throw new NotFoundException("Không tìm thấy câu hỏi");
-    }
+    // if (!question) {
+    //   throw new NotFoundException("Không tìm thấy câu hỏi");
+    // }
 
-    const updateAnswer = await this.answerRepo.update({ id }, { ...updateAnswerDto, is_true: updateAnswerDto.is_true ? true : false, question: question });
+    // const updateAnswer = await this.answerRepo.update({ id }, { ...updateAnswerDto, is_true: updateAnswerDto.is_true ? true : false, question: question });
+    const updateAnswer = await this.answerRepo.update({ id }, { ...updateAnswerDto });
     if (updateAnswer.affected === 0) {
       throw new BadRequestException("Update lỗi");
     }

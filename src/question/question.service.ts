@@ -129,9 +129,18 @@ export class QuestionService {
         throw new NotFoundException("Không tìm thấy group question");
       }
     }
+    else if (updateQuestionDTo.group_question) {
+      groupQuestion = updateQuestionDTo.group_question
+    }
 
+    const { answers, ...update } = updateQuestionDTo;
+    if (answers) {
+      for (const answer of updateQuestionDTo.answers) {
+        await this.answerRepository.update({ id: answer.id }, { ...answer });
+      }
+    }
     // Thực hiện cập nhật câu hỏi
-    const updateResult = await this.questionRepo.update(id, { ...updateQuestionDTo, group_question: groupQuestion });
+    const updateResult = await this.questionRepo.update(id, { ...update, group_question: groupQuestion });
 
     // Kiểm tra kết quả cập nhật
     if (updateResult.affected === 0) {
