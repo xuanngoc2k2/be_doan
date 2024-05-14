@@ -40,7 +40,6 @@ export class AnswerService {
 
   async update(id: number, updateAnswerDto: UpdateAnswerDto) {
     const answer = await this.answerRepo.findOne({ where: { id } })
-    console.log(updateAnswerDto);
     if (!answer) {
       throw new NotFoundException("Không tìm thấy câu trả lời");
     }
