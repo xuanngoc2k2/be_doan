@@ -151,6 +151,23 @@ export class ExamsService {
 
   }
 
+  async adminFindAll(id: number) {
+    const rss = await this.examRepo
+      .createQueryBuilder('exam')
+      .leftJoinAndSelect('exam.examQuestions', 'exam_question')
+      .leftJoinAndSelect('exam_question.question', 'question')
+      .leftJoinAndSelect('question.answers', 'answer')
+      .leftJoinAndSelect('question.group_question', 'group_question')
+      .where('exam_question.examId = :id', { id })
+      .select(['exam', 'exam_question', 'group_question', 'question', 'answer.id', 'answer.answer', 'answer.isImage', 'answer.is_true'])
+      .getOne();
+    // return rss;
+    if (!rss) {
+      return null; // Không tìm thấy kết quả, trả về null hoặc xử lý theo cách thích hợp
+    }
+    return this.configFindQuestionExam(rss);
+  }
+
   async findOne2(id: number) {
     const rss = await this.examRepo
       .createQueryBuilder('exam')
@@ -188,21 +205,7 @@ export class ExamsService {
   //   const rss = await rs.getMany();
   //   return this.configResult(rss)[0];
   // }
-
-  findQuestionExam2 = async (id: number) => {
-    const rss = await this.examRepo
-      .createQueryBuilder('exam')
-      .leftJoinAndSelect('exam.examQuestions', 'exam_question')
-      .leftJoinAndSelect('exam_question.question', 'question')
-      .leftJoinAndSelect('question.answers', 'answer')
-      .leftJoinAndSelect('question.group_question', 'group_question')
-      .where('exam_question.examId = :id', { id })
-      .select(['exam', 'exam_question', 'group_question', 'question', 'answer.id', 'answer.answer', 'answer.isImage'])
-      .getOne();
-    // return rss;
-    if (!rss) {
-      return null; // Không tìm thấy kết quả, trả về null hoặc xử lý theo cách thích hợp
-    }
+  configFindQuestionExam = (rss) => {
 
     const groupQuestionsWithQuestions: Group_Question[] = [];
     const { examQuestions, ...rs } = rss;
@@ -229,6 +232,22 @@ export class ExamsService {
     });
 
     return { ...rs, examGrquestions: groupQuestionsWithQuestions };
+  }
+  findQuestionExam2 = async (id: number) => {
+    const rss = await this.examRepo
+      .createQueryBuilder('exam')
+      .leftJoinAndSelect('exam.examQuestions', 'exam_question')
+      .leftJoinAndSelect('exam_question.question', 'question')
+      .leftJoinAndSelect('question.answers', 'answer')
+      .leftJoinAndSelect('question.group_question', 'group_question')
+      .where('exam_question.examId = :id', { id })
+      .select(['exam', 'exam_question', 'group_question', 'question', 'answer.id', 'answer.answer', 'answer.isImage'])
+      .getOne();
+    // return rss;
+    if (!rss) {
+      return null; // Không tìm thấy kết quả, trả về null hoặc xử lý theo cách thích hợp
+    }
+    return this.configFindQuestionExam(rss);
   }
 
 
@@ -295,7 +314,7 @@ export class ExamsService {
 
 
 
-  async update(id: number, updateExamDto: UpdateExamDto) {
+  async update(id: number, updateExamDto: UpdateExamDto, questions?: Question[]) {
     if (!await this.examRepo.findOne({ where: { id } })) {
       throw new NotFoundException("Không tìm thấy exam");
     }
@@ -306,6 +325,18 @@ export class ExamsService {
     if (updateExam.affected === 0) {
       throw new BadRequestException("Update lỗi");
     }
+
+    await this.examQuestionRepo.delete({ examId: id });
+
+    if (questions && questions.length > 0) {
+      const examQuestions = questions.map(question => ({
+        examId: id,
+        questionId: question.id
+      }));
+      await this.examQuestionRepo.save(examQuestions);
+    }
+    // const listQuestion = await this.examQuestionRepo.find({ where: { examId: updateExamDto.id } })
+    // console.log(listQuestion);
     return { success: true };
   }
 

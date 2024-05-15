@@ -5,6 +5,8 @@ export class CreateExamDto {
     @IsNotEmpty({ message: "Tên exam không được để trống" })
     exam_name: string;
 
+    id?: number;
+
     description: string;
 
     @IsNotEmpty({ message: "Duration không được để trống" })
@@ -20,6 +22,6 @@ export class CreateExamDto {
     @IsDate({ message: "endAt có định dạng là Date" })
     endAt: Date;
 
-    @IsIn(['Topik I', 'Topik II', 'EPS'], { message: 'Type phải là Topik I, Topik II hoặc EPS' })
+    @IsIn(['TOPIK I', 'TOPIK II', 'EPS'], { message: 'Type phải là TOPIK I, TOPIK II hoặc EPS' })
     type: string;
 }

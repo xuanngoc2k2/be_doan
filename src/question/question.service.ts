@@ -74,6 +74,14 @@ export class QuestionService {
       .getMany();
   }
 
+  findQuestionByGroup = async (id: number) => {
+    return await this.questionRepo
+      .createQueryBuilder('question')
+      .leftJoin('question.group_question', 'group_question')
+      .where('group_question.id = :id', { id })
+      .getMany();
+  }
+
   async findOne(id: number) {
     return await this.questionRepo
       .createQueryBuilder('question')

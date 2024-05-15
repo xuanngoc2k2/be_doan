@@ -55,6 +55,12 @@ export class ExamsController {
     return this.examsService.findOne2(+id);
   }
 
+  @Post('/admin/:id')
+  @ResponseMessage("Admin lấy all of exam")
+  adminFindQuestionExam(@Param('id') id: string) {
+    return this.examsService.adminFindAll(+id);
+  }
+
   @Post('/question/:id')
   // @Public()
   @ResponseMessage("Lấy câu hỏi của exam theo id")
@@ -75,8 +81,8 @@ export class ExamsController {
   @Put(':id')
   @Admin()
   @ResponseMessage("Update Exam")
-  update(@Param('id') id: string, @Body() updateExamDto: UpdateExamDto) {
-    return this.examsService.update(+id, updateExamDto);
+  update(@Param('id') id: string, @Body('exam') updateExamDto: UpdateExamDto, @Body('questions') questions?: Question[]) {
+    return this.examsService.update(+id, updateExamDto, questions);
   }
 
   @Delete(':id')

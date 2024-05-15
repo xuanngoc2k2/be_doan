@@ -33,8 +33,9 @@ export class GroupQuestionService {
     return await this.groupQuestionRepo
       .createQueryBuilder('group_question')
       .innerJoinAndSelect('group_question.questions', 'question')
+      .innerJoinAndSelect('question.answers', 'answer')
       .where('group_question.id = :id', { id })
-      .getMany();
+      .getOne();
   }
   async findQuestionById(idGroup: number, idQuestion) {
     return await this.groupQuestionRepo

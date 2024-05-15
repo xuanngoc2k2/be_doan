@@ -38,6 +38,12 @@ export class QuestionController {
     return this.questionService.findOne(+id);
   }
 
+  @Post('group/:id')
+  @ResponseMessage("Lấy thông tin câu hỏi theo id group")
+  findQuestion(@Param('id') id: string) {
+    return this.questionService.findQuestionByGroup(+id);
+  }
+
   @Post('detail/:id')
   @ResponseMessage("Lấy thông tin câu hỏi theo id")
   findOneQuestion(@Param('id') id: string) {

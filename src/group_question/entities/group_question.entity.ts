@@ -8,10 +8,10 @@ export class Group_Question {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     description: string;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, type: 'longtext' })
     content: string;
 
     @Column({ default: null })
