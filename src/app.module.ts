@@ -26,9 +26,12 @@ import { GroupQuestionModule } from './group_question/group_question.module';
 // import { ExamGrquestionModule } from './exam-grquestion/exam-grquestion.module';
 import { ListVocabModule } from './list-vocab/list-vocab.module';
 import { ExamQuestionModule } from './examquestion/examquestion.module';
+import { MailModule } from './mail/mail.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true
     }),
@@ -67,6 +70,7 @@ import { ExamQuestionModule } from './examquestion/examquestion.module';
     // ExamGrquestionModule,
     ListVocabModule,
     ExamQuestionModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService,

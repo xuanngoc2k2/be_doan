@@ -38,7 +38,7 @@ export class AuthService {
         };
         const refresh_token = this.createRefreshToken(payload);
         await this.usersService.updateRefreshToken(refresh_token, id);
-
+        await this.usersService.updateLastLogin(id);
         response.cookie('refresh_token', refresh_token, {
             httpOnly: true,
             maxAge: ms(this.configService.get<string>("JWT_REFRESH_EXPIRE")),
@@ -88,6 +88,7 @@ export class AuthService {
                     httpOnly: true,
                     maxAge: ms(this.configService.get<string>("JWT_REFRESH_EXPIRE")),
                 });
+                await this.usersService.updateLastLogin(id);
                 return {
                     access_token: this.jwtService.sign(payload),
                     user: {
@@ -116,6 +117,7 @@ export class AuthService {
     }
 
     logout = async (user: IUser, response: Response) => {
+        await this.usersService.updateLastLogin(user.id);
         await this.usersService.updateRefreshToken("", user.id);
         response.clearCookie('refresh_token');
         return "ok";

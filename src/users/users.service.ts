@@ -92,6 +92,10 @@ export class UsersService {
       message: "Cập nhật mật khẩu lỗi"
     }
   }
+  async updateLastLogin(userId: number): Promise<void> {
+    const now = new Date();
+    await this.userRepo.update(userId, { last_login: now });
+  }
   async update(id: number, user: User) {
     const userU = await this.userRepo.findOne({ where: { id } })
     if (userU) {
