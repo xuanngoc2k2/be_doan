@@ -75,6 +75,7 @@ export class ResultDetailService {
         'question.score',
         'answer.id',
         'answer.answer',
+        'answer.isImage',
         'answer.is_true',
         'result_detail'
       ])

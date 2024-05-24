@@ -12,8 +12,9 @@ export class ResultController {
   @Post()
   // @Admin()
   @ResponseMessage("Create new result")
-  create(@Body() createResultDto: CreateResultDto, @User() user: IUser) {
-    return this.resultService.create(createResultDto, user);
+  create(@Body('examId') examId: number,
+    @Body('result') result: Object[], @User() user: IUser) {
+    return this.resultService.create({ examId, result }, user);
   }
 
   @Get()

@@ -12,8 +12,12 @@ export class CommentController {
   @Post()
   // @UserRole
   @ResponseMessage("Viết Comment")
-  create(@Body() createCommentDto: CreateCommentDto, @User() user: IUser) {
-    return this.commentService.create(createCommentDto, user);
+  create(@Body('comment') comment: string
+    , @User() user: IUser,
+    @Body('lessonId') lessonId: number,
+    @Body('commentAt') commentAt?: string,
+  ) {
+    return this.commentService.create({ comment, lessonId, commentAt } as CreateCommentDto, user);
   }
 
   @Post('getAllNote')

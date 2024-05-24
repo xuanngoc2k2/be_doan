@@ -3,6 +3,8 @@ import { VocabularysService } from './vocabularys.service';
 import { Answer, CreateVocabularyDto } from './dto/create-vocabulary.dto';
 import { UpdateVocabularyDto } from './dto/update-vocabulary.dto';
 import { Admin, Public, ResponseMessage } from 'src/decorator/customize';
+import { ListVocab } from 'src/list-vocab/entities/list-vocab.entity';
+import { Vocabulary } from './entities/vocabulary.entity';
 
 @Controller('vocabularys')
 export class VocabularysController {
@@ -10,8 +12,10 @@ export class VocabularysController {
 
   @Post()
   @ResponseMessage("Tạo mới từ vựng")
-  create(@Body() createVocabularyDto: CreateVocabularyDto) {
-    return this.vocabularysService.create(createVocabularyDto);
+  create(
+    @Body('newVocab') createVocabularyDto: Object,
+    @Body('idList') idList: number) {
+    return this.vocabularysService.create(createVocabularyDto as CreateVocabularyDto, idList);
   }
 
   @Post('checkResult')
@@ -34,8 +38,30 @@ export class VocabularysController {
     @Body('word') word?: string,
     @Body('level') level?: string[],
     @Body('meaning') meaning?: string,
+    @Body('listId') listId?: string,
   ) {
-    return this.vocabularysService.findAll(id, word, meaning, level);
+    return this.vocabularysService.findAll(id, word, meaning, level, +listId);
+  }
+
+  @Post('/get-not-of-list')
+  @ResponseMessage("Get all vocabulary not of list")
+  getAllVocabNotOfList(
+    @Body('id') id?: number,
+    @Body('word') word?: string,
+    @Body('level') level?: string[],
+    @Body('meaning') meaning?: string,
+    @Body('idList') idList?: string,
+  ) {
+    return this.vocabularysService.findAllNotOfList(id, word, meaning, level, +idList);
+  }
+
+  @Post('/addVocabOfList')
+  @ResponseMessage("Add all vocabulary of list")
+  addVocabOfList(
+    @Body('listVocab') listVocab: Vocabulary[],
+    @Body('idList') idList?: string,
+  ) {
+    return this.vocabularysService.addVocabOfList(listVocab, +idList);
   }
 
   @Post('userSearch')
@@ -54,15 +80,15 @@ export class VocabularysController {
 
   @Put(':id')
   @Admin()
-  update(@Param('id') id: string, @Body() updateVocabularyDto: UpdateVocabularyDto) {
-    return this.vocabularysService.update(+id, updateVocabularyDto);
+  update(@Param('id') id: string, @Body() updateVocabularyDto: Object) {
+    return this.vocabularysService.update(+id, updateVocabularyDto as UpdateVocabularyDto);
   }
 
-  @Post('courses')
-  @Public()
-  getAllVocabCourse(@Body('id') id?: number) {
-    return this.vocabularysService.getVocabByIdCourse(id);
-  }
+  // @Post('courses')
+  // @Public()
+  // getAllVocabCourse(@Body('id') id?: number) {
+  //   return this.vocabularysService.getVocabByIdCourse(id);
+  // }
 
   @Admin()
   @Delete(':id')

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Put } from '@nestjs/common';
 import { ListVocabService } from './list-vocab.service';
 import { CreateListVocabDto } from './dto/create-list-vocab.dto';
 import { UpdateListVocabDto } from './dto/update-list-vocab.dto';
@@ -11,20 +11,30 @@ export class ListVocabController {
 
   @Post()
   @ResponseMessage("Tạo mới list từ")
-  create(@Body() createListVocabDto: CreateListVocabDto, @User() user: IUser) {
-    return this.listVocabService.create(createListVocabDto, user);
+  create(@Body() createListVocabDto: Object, @User() user: IUser) {
+    return this.listVocabService.create(createListVocabDto as CreateListVocabDto, user);
+  }
+
+
+  @Post('copy')
+  @ResponseMessage("Copy list")
+  copy(
+    // @Body('idList') idList,
+    @Body('idList') idList: string,
+    @User() user: IUser,
+    @Body('name') name?: string,
+    @Body('des') des?: string,
+  ) {
+    return this.listVocabService.copy(+idList, user, name, des);
   }
 
   @Get()
   @ResponseMessage("Get all list từ")
-  findAll(@User() user: IUser) {
-    return this.listVocabService.findAll(user);
-  }
-
-  @Post('course')
-  @ResponseMessage("Get list vocab with course")
-  getVocabWithCourse() {
-    return this.listVocabService.getVocabWithCourse();
+  findAll(
+    @User() user: IUser,
+    @Query('search') search?: string
+  ) {
+    return this.listVocabService.findAll(user, search);
   }
 
   @Get(':id')
@@ -32,9 +42,9 @@ export class ListVocabController {
     return this.listVocabService.findOne(+id, user);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateListVocabDto: UpdateListVocabDto) {
-    return this.listVocabService.update(+id, updateListVocabDto);
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateListVocabDto: Object) {
+    return this.listVocabService.update(+id, updateListVocabDto as UpdateListVocabDto);
   }
 
   @Delete(':id')

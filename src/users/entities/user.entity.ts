@@ -3,6 +3,7 @@ import { ListVocab } from 'src/list-vocab/entities/list-vocab.entity';
 import { Result } from 'src/result/entities/result.entity';
 import { User_Course } from 'src/user_course/entities/user_course.entity';
 import { User_Lesson } from 'src/user_lesson/entities/user_lesson.entity';
+import { UserList } from 'src/user_list/entities/user_list.entity';
 import { User_Vocabulary } from 'src/user_vocabulary/entities/user_vocabulary.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -56,8 +57,11 @@ export class User {
     @OneToMany(() => Comment, (comment) => comment.user)
     comments: Comment[]
 
-    @OneToMany(() => ListVocab, (listvob) => listvob.user)
-    listVobs: ListVocab[]
+    @OneToMany(() => UserList, (userlist) => userlist.user)
+    userlist: ListVocab[]
+
+    @OneToMany(() => User_Vocabulary, (userVocab) => userVocab.user)
+    userVocab: User_Vocabulary[];
 
     // @OneToMany(() => User_Vocabulary, (user_vocabulary) => user_vocabulary.user)
     // user_vocabularys: User_Vocabulary[]

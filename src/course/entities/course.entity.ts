@@ -32,7 +32,7 @@ export class Course {
     @OneToMany(() => User_Course, (user_course) => user_course.course)
     user_courses: User_Course[]
 
-    @OneToMany(() => Vocabulary, (vocabulary) => vocabulary.course)
-    vocabularys: Vocabulary[]
+    // @OneToMany(() => Vocabulary, (vocabulary) => vocabulary.course)
+    // vocabularys: Vocabulary[]
 
 }

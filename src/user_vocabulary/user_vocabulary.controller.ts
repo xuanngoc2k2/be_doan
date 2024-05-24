@@ -1,7 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { UserVocabularyService } from './user_vocabulary.service';
-import { CreateUserVocabularyDto } from './dto/create-user_vocabulary.dto';
-import { UpdateUserVocabularyDto } from './dto/update-user_vocabulary.dto';
 import { ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 import { CreateVocabularyDto } from 'src/vocabularys/dto/create-vocabulary.dto';
@@ -10,9 +8,13 @@ import { CreateVocabularyDto } from 'src/vocabularys/dto/create-vocabulary.dto';
 export class UserVocabularyController {
   constructor(private readonly userVocabularyService: UserVocabularyService) { }
 
-  @Post('/:idList')
+  @Post()
   @ResponseMessage("Thêm/Lưu từ mới list")
-  create(@Param('idList') idList, @Body() vocabulary: CreateVocabularyDto, @User() user: IUser) {
+  create(
+    // @Body('idList') idList,
+    @Body() createVocabData: { idList: number, vocabulary: CreateVocabularyDto },
+    @User() user: IUser) {
+    const { idList, vocabulary } = createVocabData;
     return this.userVocabularyService.create(idList, vocabulary, user);
   }
 
@@ -31,27 +33,30 @@ export class UserVocabularyController {
   update(
     @Body('vocabularyId') vocabularyId: string,
     @Body('isRemember') isRemember: number,
+    @Body('listId') listId: string,
     @User() user: IUser
   ) {
-    return this.userVocabularyService.update(+vocabularyId, +isRemember, user);
+    return this.userVocabularyService.update(+vocabularyId, +listId, +isRemember, user);
   }
 
   @Post('remove/:vocabularyId/:listId')
   delete(
     @Param('vocabularyId') vocabularyId: string,
     @Param('listId') listId: string,
+    @User() user: IUser
   ) {
     // Xử lý logic ở đây, sử dụng body để truyền dữ liệu
-    return this.userVocabularyService.remove(+vocabularyId, +listId);
+    return this.userVocabularyService.remove(+vocabularyId, +listId, user);
   }
 
   @Post('updateRemember/:vocabularyId/:listId')
   updateRemember(
     @Param('vocabularyId') vocabularyId: string,
     @Param('listId') listId: string,
+    @User() user: IUser
   ) {
     // Xử lý logic ở đây, sử dụng body để truyền dữ liệu
-    return this.userVocabularyService.updateRemember(+vocabularyId, +listId);
+    return this.userVocabularyService.updateRemember(+vocabularyId, +listId, user);
   }
 
 
@@ -66,10 +71,11 @@ export class UserVocabularyController {
   @Delete(':vocabularyId/:listId')
   remove(
     @Param('vocabularyId') vocabularyId: string,
-    @Param('listId') listId: string
+    @Param('listId') listId: string,
+    @User() user: IUser
     // @Body('vocabularyId') vocabularyId: string,
     // @Body('listId') listId: string
   ) {
-    return this.userVocabularyService.remove(+vocabularyId, +listId);
+    return this.userVocabularyService.remove(+vocabularyId, +listId, user);
   }
 }

@@ -7,7 +7,7 @@ export class Comment {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, type: 'longtext' })
     comment: string;
 
     @Column({ nullable: true, default: null })

@@ -9,6 +9,7 @@ import { User_Vocabulary } from './entities/user_vocabulary.entity';
 import { User } from 'src/decorator/customize';
 import { VocabularysService } from 'src/vocabularys/vocabularys.service';
 import { CreateVocabularyDto } from 'src/vocabularys/dto/create-vocabulary.dto';
+import { Vocaboflist } from 'src/vocaboflist/entities/vocaboflist.entity';
 @Injectable()
 export class UserVocabularyService {
   constructor(
@@ -16,14 +17,17 @@ export class UserVocabularyService {
     private vocabularyRepo: Repository<Vocabulary>,
     @InjectRepository(User_Vocabulary)
     private userVocabularyRepo: Repository<User_Vocabulary>,
+    @InjectRepository(Vocaboflist)
+    private vocaboflistRepo: Repository<Vocaboflist>,
     private vocabSevice: VocabularysService
   ) {
 
   }
   async create(idList: number, vocabulary: CreateVocabularyDto, user: IUser) {
+    // const findList = await this.
     const newVocab = await this.vocabSevice.create(vocabulary);
-    console.log(vocabulary)
-    const newListVob = await this.userVocabularyRepo.create({ isRemember: 0, listVobId: idList, vocabularyId: newVocab.id, vocabulary: newVocab })
+    await this.vocaboflistRepo.save(await this.vocaboflistRepo.create({ vocabularyId: newVocab.id, listVocabId: idList }));
+    const newListVob = await this.userVocabularyRepo.create({ isRemember: 0, listVocabId: idList, vocabularyId: newVocab.id, userId: user.id })
     // check đã thêm chưa
     return await this.userVocabularyRepo.save(newListVob);
   }
@@ -36,36 +40,35 @@ export class UserVocabularyService {
     return `This action returns a #${id} userVocabulary`;
   }
 
-  async update(isRemember: number, vocabularyId: number, user: IUser) {
-    // if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
-    //   throw new NotFoundException("Không tìm thấy từ vựng");
-    // }
-    // if (!await this.userVocabularyRepo.find({ where: { vocabularyId: vocabularyId, userId: user.id } })) {
-    //   throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
-    // }
-    // const updateUVocab = await this.userVocabularyRepo.update({ userId: user.id, vocabularyId: vocabularyId }, { isRemember });
-    // if (updateUVocab.affected === 0) {
-    //   throw new BadRequestException("Update lỗi");
-    // }
+  async update(isRemember: number, listId: number, vocabularyId: number, user: IUser) {
+    if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
+      throw new NotFoundException("Không tìm thấy từ vựng");
+    }
+    if (!await this.userVocabularyRepo.find({ where: { vocabularyId: vocabularyId, userId: user.id, listVocabId: listId } })) {
+      throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
+    }
+    const updateUVocab = await this.userVocabularyRepo.update({ userId: user.id, vocabularyId: vocabularyId, listVocabId: listId }, { isRemember });
+    if (updateUVocab.affected === 0) {
+      throw new BadRequestException("Update lỗi");
+    }
     return { success: true };
   }
 
-  async updateRemember(vocabularyId: number, listId: number): Promise<{ success: boolean }> {
+  async updateRemember(vocabularyId: number, listId: number, user: IUser): Promise<{ success: boolean }> {
     const vocabulary = await this.vocabularyRepo.findOne({ where: { id: vocabularyId } });
     if (!vocabulary) {
       throw new NotFoundException("Không tìm thấy từ vựng");
     }
-
-    const userVocabulary = await this.userVocabularyRepo.findOne({ where: { listVobId: listId, vocabularyId: vocabularyId } });
+    const userVocabulary = await this.userVocabularyRepo.findOne({ where: { listVocabId: listId, vocabularyId: vocabulary.id, userId: user.id } });
     if (!userVocabulary) {
       throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
     }
-
     const newIsRemember = userVocabulary.isRemember === 0 ? 1 : 0;
-    await this.userVocabularyRepo.update({ listVobId: listId, vocabularyId: vocabularyId }, { isRemember: newIsRemember });
+    await this.userVocabularyRepo.update({ listVocabId: listId, vocabularyId: vocabularyId, userId: user.id }, { isRemember: newIsRemember });
 
     return { success: true };
   }
+
   shuffleArray(array: any[]) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -76,19 +79,20 @@ export class UserVocabularyService {
 
   // Chọn ngẫu nhiên 3 nghĩa từ danh sách và lưu thành listQuestion
   renderQuestion = async (listId: number) => {
-    const listVob = await this.vocabularyRepo
-      .createQueryBuilder('vocabulary')
-      .leftJoinAndSelect('vocabulary.user_vocabularys', 'user_vocabularys')
-      .where('user_vocabularys.listVobId = :id', { id: listId })
-      .select(['vocabulary.id', 'vocabulary.word', 'vocabulary.meaning', 'vocabulary.partOfSpeech', 'vocabulary.spell'])
-      .getMany()
+    const listVob = await this.vocaboflistRepo
+      .createQueryBuilder('vocaboflist')
+      .leftJoinAndSelect('vocaboflist.vocabulary', 'vocabulary') // Đổi 'vocaboflist.vocabularyId' thành 'vocaboflist.vocabulary'
+      .where('vocaboflist.listVocabId = :id', { id: listId })
+      .select(['vocaboflist', 'vocabulary.id', 'vocabulary.word', 'vocabulary.meaning', 'vocabulary.partOfSpeech', 'vocabulary.spell'])
+      .getMany();
+
     const questions = [];
     listVob.forEach((t) => {
-      const { word, ...meaning } = t;
+      const { word, ...meaning } = t.vocabulary; // Sửa 't' thành 't.vocabulary'
       let ans = [word];
 
       // Tạo một mảng chứa các ý nghĩa ngoại trừ meaning
-      const otherMeanings = listVob.filter(vobs => vobs.word !== word).map(vobs => vobs.word);
+      const otherMeanings = listVob.filter(vobs => vobs.vocabulary.word !== word).map(vobs => vobs.vocabulary.word); // Sửa 'vobs.word' thành 'vobs.vocabulary.word'
 
       // Xáo trộn mảng otherMeanings
       this.shuffleArray(otherMeanings);
@@ -107,17 +111,26 @@ export class UserVocabularyService {
     });
     return { questions };
   }
-  async remove(vocabularyId: number, listId: number) {
+
+
+  async remove(vocabularyId: number, listId: number, user: IUser) {
     if (!await this.vocabularyRepo.find({ where: { id: vocabularyId } })) {
       throw new NotFoundException("Không tìm thấy từ vựng");
     }
-    // if (!await this.userVocabularyRepo.find({ where: { vocabularyId: vocabularyId, userId: user.id } })) {
-    //   throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
-    // }
-    const deleteUVocab = await this.userVocabularyRepo.softDelete({ listVobId: listId, vocabularyId: vocabularyId });
-    if (deleteUVocab.affected === 0) {
+    if (!await this.userVocabularyRepo.find({ where: { vocabularyId: vocabularyId, userId: user.id, listVocabId: listId } })) {
+      throw new NotFoundException("Không tìm thấy từ vựng của người dùng");
+    }
+    if (user.role == 'ADMIN') {
+      const deleteUVocab = await this.userVocabularyRepo.softDelete({ listVocabId: listId, vocabularyId: vocabularyId });
+    }
+    else {
+      const deleteUVocab = await this.userVocabularyRepo.softDelete({ listVocabId: listId, vocabularyId: vocabularyId, userId: user.id });
+    }
+    const deleteVocabOfList = await this.vocaboflistRepo.delete({ listVocabId: listId, vocabularyId: vocabularyId });
+    if (deleteVocabOfList.affected === 0) {
       throw new BadRequestException("Delete lỗi");
     }
+
     return { success: true };
   }
 }

@@ -28,6 +28,8 @@ import { ListVocabModule } from './list-vocab/list-vocab.module';
 import { ExamQuestionModule } from './examquestion/examquestion.module';
 import { MailModule } from './mail/mail.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { UserListModule } from './user_list/user_list.module';
+import { VocaboflistModule } from './vocaboflist/vocaboflist.module';
 
 @Module({
   imports: [
@@ -43,7 +45,6 @@ import { ScheduleModule } from '@nestjs/schedule';
         port: configService.get<number>('DB_PORT'),
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
-        // collation: "utf8mb4_unicode_ci",
         database: configService.get<string>('DB_DATABASE'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: true,
@@ -67,10 +68,11 @@ import { ScheduleModule } from '@nestjs/schedule';
     AuthModule,
     FileModule,
     GroupQuestionModule,
-    // ExamGrquestionModule,
     ListVocabModule,
     ExamQuestionModule,
     MailModule,
+    UserListModule,
+    VocaboflistModule,
   ],
   controllers: [AppController],
   providers: [AppService,

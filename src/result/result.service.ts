@@ -28,7 +28,6 @@ export class ResultService {
     }
     const count = (await this.lastCount(user.id, exam.id));
     const newResult = await this.resultRepo.create({ ...createResultDto, count, user: user, exam })
-    console.log(newResult)
     await this.resultRepo.save(newResult);
     const answers = [];
     for (const k in createResultDto.result) {
@@ -42,8 +41,7 @@ export class ResultService {
         )
       }
     }
-    console.log(createResultDto)
-    await this.resultDetailService.create(answers);
+    const newRDetail = await this.resultDetailService.create(answers);
     return await this.update(newResult.id, {});
     // const 
   }

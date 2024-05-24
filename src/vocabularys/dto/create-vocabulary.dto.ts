@@ -13,7 +13,7 @@ export class CreateVocabularyDto {
 
     example?: string;
 
-    courseId?: number;
+    listVocabId?: number;
 
     partOfSpeech: string;
 
@@ -21,7 +21,7 @@ export class CreateVocabularyDto {
 
     spell: string;
 
-    course?: Course;
+    // course?: Course;
 }
 
 export class Answer {
