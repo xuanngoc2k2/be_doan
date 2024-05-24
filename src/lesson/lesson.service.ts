@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { Course } from 'src/course/entities/course.entity';
 import { IsNumber } from 'class-validator';
 import { Comment } from 'src/comment/entities/comment.entity';
+import { Question } from 'src/question/entities/question.entity';
 
 @Injectable()
 export class LessonService {
@@ -16,7 +17,9 @@ export class LessonService {
     @InjectRepository(Course)
     private readonly courseRepo: Repository<Course>,
     @InjectRepository(Comment)
-    private readonly commentRepo: Repository<Comment>
+    private readonly commentRepo: Repository<Comment>,
+    @InjectRepository(Question)
+    private readonly questionRepo: Repository<Question>
   ) {
 
   }
@@ -116,7 +119,12 @@ export class LessonService {
     if (!lesson) {
       throw new BadRequestException("Không tìm thấy bài học");
     }
-    const result = await this.lessonRepo.update({ id }, { ...updateLessonDto });
+    const question = await this.questionRepo.findOne({ where: { id: updateLessonDto.questionId } });
+    if (updateLessonDto.isQuestion) {
+      updateLessonDto.content = null;
+      updateLessonDto.duration = "0:00";
+    }
+    const result = await this.lessonRepo.update({ id }, { ...updateLessonDto, question: question });
     if (result.affected === 0) {
       throw new BadRequestException("Cập nhật lỗi !");
     }

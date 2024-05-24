@@ -21,5 +21,7 @@ export class CreateLessonDto {
 
     order: number;
 
+    duration?: string;
+
     questionId: number;
 }

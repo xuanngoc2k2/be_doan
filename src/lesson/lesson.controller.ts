@@ -11,8 +11,9 @@ export class LessonController {
   @Post()
   @Admin()
   @ResponseMessage("Tạo mới bài học")
-  create(@Body() createLessonDto: CreateLessonDto) {
-    return this.lessonService.create(createLessonDto);
+  create(@Body() createLessonDto: Object) {
+    console.log(createLessonDto);
+    return this.lessonService.create(createLessonDto as CreateLessonDto);
   }
 
   @Get()
@@ -49,8 +50,9 @@ export class LessonController {
   @Admin()
   @Put(':id')
   @ResponseMessage("Cập nhật thông tin bài học")
-  update(@Param('id') id: string, @Body() updateLessonDto: UpdateLessonDto) {
-    return this.lessonService.update(+id, updateLessonDto);
+  update(@Param('id') id: string, @Body() updateLessonDto: Object) {
+    console.log(updateLessonDto)
+    return this.lessonService.update(+id, updateLessonDto as UpdateLessonDto);
   }
 
   @Admin()

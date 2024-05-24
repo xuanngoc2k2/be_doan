@@ -28,10 +28,10 @@ export class UserCourseService {
         userId: user.id
       }
     })
-    if (findUCourse.length == 1)
-      // ) {
+    if (findUCourse.length == 1) {
+      return { already: true };
       throw new BadRequestException("Người dùng đã đăng kí khóa học này rồi");
-    // }
+    }
 
     const course = await this.courseRepo.findOne({ where: { id } });
     if (course === null) {

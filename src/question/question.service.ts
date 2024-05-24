@@ -198,13 +198,30 @@ export class QuestionService {
     return await queryBuilder.getMany();
   }
 
-  checkAnswer = async (id: number, idQues: number) => {
-    const rs = await this.questionRepo.createQueryBuilder("question")
+  checkAnswer = async (answer: string, idQues: number) => {
+    const question = await this.questionRepo.createQueryBuilder("question")
       .leftJoinAndSelect('question.answers', 'answer')
-      .where('question.id = :idQues and answer.id = :id', { idQues, id })
+      .where('question.id = :idQues and answer.answer = :answer', { idQues, answer })
       .getOne();
-    return rs.answers[0].is_true;
-  }
+    if (question && question.answers) {
+      const an = question.answers.find((a) => a.answer == answer);
+      if (an.is_true) {
+        return {
+          isCorrect: true,
+          explain: an.explain
+        };
+      }
+      else {
+        return {
+          isCorrect: false,
+        };
+      }
+    } else {
+      return {
+        isCorrect: false
+      };
+    }
+  };
 
   Random3Question = async () => {
     const allQuestions = await this.questionRepo

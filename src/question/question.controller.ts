@@ -66,8 +66,8 @@ export class QuestionController {
 
   @Post('check')
   @ResponseMessage("Check answer câu hỏi")
-  checkAnswer(@Body('idAns') id?: string, @Body('idQues') idQues?: string) {
-    return this.questionService.checkAnswer(+id, +idQues);
+  checkAnswer(@Body('answer') answer?: string, @Body('idQues') idQues?: string) {
+    return this.questionService.checkAnswer(answer, +idQues);
   }
 
   // @Admin()
