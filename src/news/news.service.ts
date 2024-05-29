@@ -23,9 +23,12 @@ export class NewsService {
     if (search) {
       return await this.newRepo.createQueryBuilder('news')
         .where('news.content LIKE :search', { search: `%${search}%` })
+        .orderBy('news.createdAt', 'DESC')
         .getMany();
     }
-    return await this.newRepo.find({});
+    return await this.newRepo.createQueryBuilder('news')
+      .orderBy('news.createdAt', 'DESC')
+      .getMany();
   }
 
   async findOne(id: number) {

@@ -86,12 +86,14 @@ export class ExamsService {
   configResult2 = (rs) => {
     const result = []
     rs.forEach((exam) => {
+      let totalScore = 0;
       let countUser = exam.results.length;
       let countQuestion = exam.examQuestions.length;
       let countTypeQuestion = exam.examQuestions.reduce((count, examQuestion) => {
         if (examQuestion.question.group_question && !count.includes(examQuestion.question.group_question.id)) {
           count.push(examQuestion.question.group_question.id); // Thêm id của group_question vào mảng count
         }
+        totalScore += examQuestion.question.score;
         return count;
       }, []).length;
 
@@ -100,7 +102,8 @@ export class ExamsService {
         ...examWithoutGroupQuestions, // Lấy các thuộc tính của exam từ phần tử đầu tiên của mảng rs
         countTypeQuestion,
         countQuestion,
-        countUser
+        countUser,
+        totalScore
       });
     });
     return result;
@@ -206,13 +209,10 @@ export class ExamsService {
   //   return this.configResult(rss)[0];
   // }
   configFindQuestionExam = (rss) => {
-
     const groupQuestionsWithQuestions: Group_Question[] = [];
     const { examQuestions, ...rs } = rss;
-
     examQuestions.forEach(examQuestion => {
       const { group_question, ...question } = examQuestion.question; // Loại bỏ group_question từ question
-
       const groupQuestionId = group_question.id;
       const existingGroupQuestionIndex = groupQuestionsWithQuestions.findIndex(st => st.id === groupQuestionId);
 
@@ -299,7 +299,24 @@ export class ExamsService {
 
   //   return result;
   // }
+  async countScore(id: number): Promise<number> {
+    const exam = await this.examRepo
+      .createQueryBuilder('exam')
+      .leftJoinAndSelect('exam.examQuestions', 'exam_question')
+      .leftJoinAndSelect('exam_question.question', 'question')
+      .where('exam.id = :id', { id })
+      .getOne();
 
+    if (!exam) {
+      throw new NotFoundException("Không tìm thấy exam");
+    }
+
+    const totalScore = exam.examQuestions.reduce((sum, examQuestion) => {
+      return sum + (examQuestion.question.score || 0);
+    }, 0);
+
+    return totalScore;
+  }
   searchExam = async (search: string, type?: string) => {
     const queryBuilder = await this.examRepo.createQueryBuilder('exam')
     if (search) {

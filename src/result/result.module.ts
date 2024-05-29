@@ -6,9 +6,10 @@ import { Result } from './entities/result.entity';
 import { Exam } from 'src/exams/entities/exam.entity';
 import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
 import { ResultDetailModule } from 'src/result_detail/result_detail.module';
+import { ExamsModule } from 'src/exams/exams.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Result, Exam, Result_Detail]), ResultDetailModule],
+  imports: [TypeOrmModule.forFeature([Result, Exam, Result_Detail]), ResultDetailModule, ExamsModule],
   controllers: [ResultController],
   providers: [ResultService],
 })

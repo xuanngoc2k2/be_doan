@@ -11,8 +11,8 @@ export class GroupQuestionController {
   @Admin()
   @Post()
   @ResponseMessage("Tạo mới group question")
-  create(@Body() createGroupQuestionDto: CreateGroupQuestionDto) {
-    return this.groupQuestionService.create(createGroupQuestionDto);
+  create(@Body() createGroupQuestionDto: Object) {
+    return this.groupQuestionService.create(createGroupQuestionDto as CreateGroupQuestionDto);
   }
 
   @Get()
@@ -44,8 +44,8 @@ export class GroupQuestionController {
   @ResponseMessage("Update group question")
   @Admin()
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateGroupQuestionDto: UpdateGroupQuestionDto) {
-    return this.groupQuestionService.update(+id, updateGroupQuestionDto);
+  update(@Param('id') id: string, @Body() updateGroupQuestionDto: Object) {
+    return this.groupQuestionService.update(+id, updateGroupQuestionDto as UpdateGroupQuestionDto);
   }
 
   @Admin()

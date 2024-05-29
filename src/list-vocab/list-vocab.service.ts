@@ -81,21 +81,37 @@ export class ListVocabService {
       let needRemember = 0;
       for (const vocabEntry of vocabList) {
         // Kiểm tra từng userVocab để tính toán đúng cho user hiện tại
-        const userVocab = vocabEntry.userVocab.find(userVob => userVob.userId === user.id);
-        if (!userVocab || userVocab.isRemember === 0) {
-          needRemember += 1;
+        if (user) {
+          const userVocab = vocabEntry.userVocab.find(userVob => userVob.userId === user.id);
+          if (!userVocab || userVocab.isRemember === 0) {
+            needRemember += 1;
+          }
         }
       }
-      rs.push({
-        id: listVocab.id,
-        name: listVocab.name,
-        totalWords,
-        needRemember,
-        remembered: totalWords - needRemember,
-        description: listVocab.description,
-        isMine: listVocab.userlist.some((u) => u.userId === user.id),
-        createdAt: listVocab.createAt
-      });
+      if (user) {
+        rs.push({
+          id: listVocab.id,
+          name: listVocab.name,
+          totalWords,
+          needRemember,
+          remembered: totalWords - needRemember,
+          description: listVocab.description,
+          isMine: user ? listVocab.userlist.some((u) => u.userId === user.id) : false,
+          createdAt: listVocab.createAt
+        });
+      }
+      else if (listVocab.userlist.length == 0) {
+        rs.push({
+          id: listVocab.id,
+          name: listVocab.name,
+          totalWords,
+          needRemember,
+          remembered: totalWords - needRemember,
+          description: listVocab.description,
+          isMine: user ? listVocab.userlist.some((u) => u.userId === user.id) : false,
+          createdAt: listVocab.createAt
+        });
+      }
     }
     return rs;
   }
@@ -135,8 +151,9 @@ export class ListVocabService {
     if (search) {
       queryBuilder.where('list_vocab.name LIKE :search', { search: `%${search}%` });
     }
-    queryBuilder.andWhere('userlist.userId IS NULL OR userlist.userId = :id', { id: user.id });
-
+    if (user) {
+      queryBuilder.andWhere('userlist.userId IS NULL OR userlist.userId = :id', { id: user.id });
+    }
     const result = await queryBuilder.getMany();
     // return result;
     return this.handleFindList(result, user);

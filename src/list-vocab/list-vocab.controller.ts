@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Put } from '@
 import { ListVocabService } from './list-vocab.service';
 import { CreateListVocabDto } from './dto/create-list-vocab.dto';
 import { UpdateListVocabDto } from './dto/update-list-vocab.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('list-vocab')
@@ -29,6 +29,7 @@ export class ListVocabController {
   }
 
   @Get()
+  @Public()
   @ResponseMessage("Get all list từ")
   findAll(
     @User() user: IUser,

@@ -17,12 +17,17 @@ export class AnswerService {
   async create(createAnswerDto: CreateAnswerDto) {
     const question = await this.questionRepo.findOne({ where: { id: createAnswerDto.questionId } });
     const answers = await this.answerRepo.createQueryBuilder('answer')
-      .innerJoin('answer.question', 'question').where('question.id=:id', { id: createAnswerDto.questionId }).getMany();
+      .innerJoin('answer.question', 'question')
+      .where('question.id=:id', { id: createAnswerDto.questionId })
+      .getMany();
 
+    const existingCorrectAnswer = answers.find(answer => answer.is_true);
 
-    if (answers.some((answer) => answer.is_true === true) && createAnswerDto.is_true) {
-      throw new BadRequestException("Câu hỏi chỉ có 1 đáp án đúng");
+    if (existingCorrectAnswer && createAnswerDto.is_true) {
+      // Update the existing correct answer to be incorrect
+      await this.answerRepo.update({ id: existingCorrectAnswer.id }, { is_true: false });
     }
+
     if (!question) {
       throw new NotFoundException("Không tìm thấy câu hỏi");
     }

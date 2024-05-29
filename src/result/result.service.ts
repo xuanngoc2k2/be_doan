@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { Exam } from 'src/exams/entities/exam.entity';
 import { Result_Detail } from 'src/result_detail/entities/result_detail.entity';
 import { ResultDetailService } from 'src/result_detail/result_detail.service';
+import { ExamsService } from 'src/exams/exams.service';
 
 @Injectable()
 export class ResultService {
@@ -18,7 +19,8 @@ export class ResultService {
     private examRepo: Repository<Exam>,
     @InjectRepository(Result_Detail)
     private resultDetailRepo: Repository<Result_Detail>,
-    private resultDetailService: ResultDetailService
+    private resultDetailService: ResultDetailService,
+    private examService: ExamsService,
   ) { }
 
   async create(createResultDto: CreateResultDto, user: IUser) {
@@ -71,9 +73,15 @@ export class ResultService {
         'exam.id',
         'exam.type'
       ])
-      .orderBy('result.createdAt', 'DESC') // Sắp xếp theo createdAt, DESC để sắp xếp theo thứ tự giảm dần
+      .orderBy('result.createdAt', 'DESC') // Sắp xếp theo createdAt
       .getMany()
-    return rs;
+    const resultPromises = rs.map(async (result) => {
+      const totalScore = await this.examService.countScore(result.exam.id);
+      return { ...result, totalScore };
+    });
+
+    const resultsWithScores = await Promise.all(resultPromises);
+    return resultsWithScores;
   }
 
   async findOne(id: number, user: IUser) {

@@ -11,5 +11,6 @@ import { ExamQuestion } from 'src/examquestion/entities/examquestion.entity';
   imports: [TypeOrmModule.forFeature([Exam, ExamQuestion])],
   controllers: [ExamsController],
   providers: [ExamsService],
+  exports: [ExamsService]
 })
 export class ExamsModule { }

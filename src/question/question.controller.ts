@@ -13,15 +13,15 @@ export class QuestionController {
   @Admin()
   @Post()
   @ResponseMessage("Tạo mới câu hỏi")
-  create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionService.create(createQuestionDto);
+  create(@Body() createQuestionDto: Object) {
+    return this.questionService.create(createQuestionDto as CreateQuestionDto);
   }
 
   @Admin()
   @Post('create-new')
   @ResponseMessage("Tạo mới câu hỏi")
-  createNew(@Body('question') question: Question[], @Body('group_question') group_question: Group_Question) {
-    return this.questionService.createNewQuestion(question, group_question);
+  createNew(@Body('question') question: Question[], @Body('group_question') group_question: Object) {
+    return this.questionService.createNewQuestion(question, group_question as Group_Question);
   }
 
 
@@ -80,8 +80,8 @@ export class QuestionController {
   @Admin()
   @Put(':id')
   @ResponseMessage("Update thông tin câu hỏi theo id")
-  update(@Param('id') id: string, @Body() updateQuestionDto: UpdateQuestionDto) {
-    return this.questionService.update(+id, updateQuestionDto);
+  update(@Param('id') id: string, @Body() updateQuestionDto: Object) {
+    return this.questionService.update(+id, updateQuestionDto as CreateQuestionDto);
   }
 
   @Admin()

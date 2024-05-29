@@ -11,8 +11,8 @@ export class AnswerController {
   @Post()
   @Admin()
   @ResponseMessage("Tạo mới answer")
-  create(@Body() createAnswerDto: CreateAnswerDto) {
-    return this.answerService.create(createAnswerDto);
+  create(@Body() createAnswerDto: Object) {
+    return this.answerService.create(createAnswerDto as CreateAnswerDto);
   }
 
   @Get()
@@ -30,8 +30,8 @@ export class AnswerController {
   @Put(':id')
   @Admin()
   @ResponseMessage("Update answer")
-  update(@Param('id') id: string, @Body() updateAnswerDto: UpdateAnswerDto) {
-    return this.answerService.update(+id, updateAnswerDto);
+  update(@Param('id') id: string, @Body() updateAnswerDto: Object) {
+    return this.answerService.update(+id, updateAnswerDto as UpdateAnswerDto);
   }
 
   @Delete(':id')

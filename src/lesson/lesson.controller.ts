@@ -12,7 +12,6 @@ export class LessonController {
   @Admin()
   @ResponseMessage("Tạo mới bài học")
   create(@Body() createLessonDto: Object) {
-    console.log(createLessonDto);
     return this.lessonService.create(createLessonDto as CreateLessonDto);
   }
 

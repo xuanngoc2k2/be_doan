@@ -11,8 +11,8 @@ export class NewsController {
   @Post()
   @Admin()
   @ResponseMessage("Tạo mới thông báo")
-  create(@Body() createNewsDto: CreateNewsDto) {
-    return this.newsService.create(createNewsDto);
+  create(@Body() createNewsDto: Object) {
+    return this.newsService.create(createNewsDto as CreateNewsDto);
   }
 
   @Get()
@@ -38,8 +38,8 @@ export class NewsController {
   @Put(':id')
   @Admin()
   @ResponseMessage("Cập nhật thông tin thông báo")
-  update(@Param('id') id: string, @Body() updateNewsDto: UpdateNewsDto) {
-    return this.newsService.update(+id, updateNewsDto);
+  update(@Param('id') id: string, @Body() updateNewsDto: Object) {
+    return this.newsService.update(+id, updateNewsDto as CreateNewsDto);
   }
 
   @Delete(':id')

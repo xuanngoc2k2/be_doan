@@ -21,8 +21,8 @@ export class ExamsController {
   @Post()
   @Admin()
   @ResponseMessage("Tạo mới exam")
-  create(@Body('exam') exam: Exam, @Body('questions') questions: Question[]) {
-    return this.examsService.create2(exam, questions);
+  create(@Body('exam') exam: Object, @Body('questions') questions: Question[]) {
+    return this.examsService.create2(exam as Exam, questions);
   }
 
   @Get()

@@ -26,22 +26,53 @@ export class CourseService {
       const courses = await this.courseRepo
         .createQueryBuilder('course')
         .leftJoinAndSelect('course.user_courses', 'user_course')
+        .leftJoinAndSelect('course.lessons', 'lessons')
         // .where('user_course.userId = :id', { id: user.id })
         .getMany()
       // const progress = 0;
       const rs = courses.map((course) => {
-        let progress = 0
+        let progress = 0;
+        let totalTime = 0;
+        const totalUsers = course.user_courses.length;
         const { user_courses, ...cour } = course;
         user_courses.map((u) => {
           if (u.userId === user.id) {
             progress = u.progress
           }
         })
-        return { ...cour, progress: progress }
+        //lesson.duration = '10:04'
+        course.lessons.forEach((lesson) => {
+          totalTime += this.parseDuration(lesson.duration);
+        });
+        return { ...cour, progress: progress, totalUsers, totalTime: this.formatTime(totalTime) }
       })
       return rs;
     }
     return this.courseRepo.find({});
+  }
+
+  formatTime(seconds: number): string {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+
+    if (hours > 0) {
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    } else {
+      return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    }
+  }
+  parseDuration(duration: string): number {
+    const parts = duration.split(':').map(Number);
+    if (parts.length === 3) {
+      // hh:mm:ss
+      return parts[0] * 3600 + parts[1] * 60 + parts[2];
+    } else if (parts.length === 2) {
+      // mm:ss
+      return parts[0] * 60 + parts[1];
+    } else {
+      return 0;
+    }
   }
 
   findOne(id: number) {
@@ -74,13 +105,26 @@ export class CourseService {
     const result = await this.courseRepo
       .createQueryBuilder('course')
       .leftJoinAndSelect('course.lessons', 'lesson')
+      .leftJoinAndSelect('course.user_courses', 'user_course')
       .leftJoinAndSelect('lesson.user_lessons', 'user_lesson')
       .where("course.id = :id", { id })
       .orderBy({
         'lesson.order': 'ASC' // Sắp xếp theo trường orderColumn của bài học (hoặc trường tương ứng)
       })
       .getOne()
-    const { lessons, ...rs } = result;
+    const { lessons, user_courses, ...course } = result;
+    let started = false;
+    if (user) {
+      user_courses.forEach(us => {
+        if (us.userId === user.id) {
+          started = true;
+        }
+      });
+    }
+    let totalTime = 0;
+    lessons.forEach((lesson) => {
+      totalTime += this.parseDuration(lesson.duration);
+    });
     const lesson = lessons.map((l) => {
       const { user_lessons, ...les } = l;
       let isComplete = false;
@@ -99,7 +143,7 @@ export class CourseService {
         currentTime
       }
     })
-    return { ...rs, lessons: lesson };
+    return { ...course, lessons: lesson, totalTime: this.formatTime(totalTime), started };
   }
 
   getAllCourseWithLesson = async (id: number) => {

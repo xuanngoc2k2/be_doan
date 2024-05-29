@@ -23,6 +23,9 @@ export class Question {
     @Column({ nullable: false })
     score: number;
 
+    @Column({ nullable: true })
+    image: string;
+
     @CreateDateColumn()
     createdAt: Date;
 
