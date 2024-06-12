@@ -39,11 +39,11 @@ export class UserLessonService {
   }
 
   async findAll(user: IUser) {
-    return this.userLessonRepo.find({ where: { userId: user.id } });
+    return await this.userLessonRepo.find({ where: { userId: user.id } });
   }
 
-  findOne(id: number, user: IUser) {
-    return this.userLessonRepo.findOne({ where: { userId: user.id, lessonId: id } });;
+  async findOne(id: number, user: IUser) {
+    return await this.userLessonRepo.findOne({ where: { userId: user.id, lessonId: id } });;
   }
 
   async update(id: number, user: IUser) {

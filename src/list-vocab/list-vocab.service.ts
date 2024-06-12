@@ -87,6 +87,9 @@ export class ListVocabService {
             needRemember += 1;
           }
         }
+        else {
+          needRemember += 1;
+        }
       }
       if (user) {
         rs.push({
@@ -116,32 +119,6 @@ export class ListVocabService {
     return rs;
   }
 
-  // handleFindList(result: ListVocab[], user?: IUser) {
-  //   const rs = [];
-  //   for (const listVocab of result) {
-  //     const vocabList = listVocab.vocablist;
-  //     let totalWords = vocabList.length;
-  //     let needRemember = 0;
-  //     for (const vocabEntry of vocabList) {
-  //       // Nếu userVocab rỗng hoặc có userVocab và isRemember bằng 0 thì cần ghi nhớ
-  //       if (vocabEntry.userVocab.length === 0 || vocabEntry.userVocab.some(userVob => userVob.isRemember === 0)) {
-  //         needRemember += 1;
-  //       }
-  //     }
-  //     rs.push({
-  //       id: listVocab.id,
-  //       name: listVocab.name,
-  //       totalWords,
-  //       needRemember,
-  //       remembered: totalWords - needRemember,
-  //       description: listVocab.description,
-  //       isMine: listVocab.userlist.some((u) => u.userId === user.id),
-  //       createdAt: listVocab.createAt
-  //     });
-  //   }
-  //   return rs;
-  // }
-
   async findAll(user: IUser, search?: string) {
     const queryBuilder = this.listVobRepo
       .createQueryBuilder('list_vocab')
@@ -158,25 +135,6 @@ export class ListVocabService {
     // return result;
     return this.handleFindList(result, user);
   }
-
-
-  // async findAll(user: IUser, search: string) {
-  //   const queryBuilder = await this.listVobRepo
-  //     .createQueryBuilder('list_vocab')
-  //     .leftJoinAndSelect('list_vocab.userlist', 'userlist')
-  //     .leftJoinAndSelect('list_vocab.vocablist', 'vocablist')
-  //     // .leftJoinAndSelect('vocablist.vocabulary', 'vocabulary')
-  //     .leftJoinAndSelect('vocablist.userVocab', 'userVocab')
-  //     .where('userlist.userId IS NULL OR userlist.userId =:id', { id: user.id })
-  //     .andWhere('list_vocab.name LIKE ')
-  //   if (search) {
-  //     queryBuilder.andWhere('list_vocab.name LIKE :search', { search: `%${search}%` });
-  //   }
-  //   const result = await queryBuilder.getMany();
-
-  //   return this.handleFindList(result, user);
-  //   // return result
-  // }
 
   async findOne(id: number, user: IUser) {
     const result = await this.listVobRepo

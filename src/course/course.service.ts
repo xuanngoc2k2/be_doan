@@ -22,33 +22,28 @@ export class CourseService {
   }
 
   async findAll(user?: IUser) {
-    if (user) {
-      const courses = await this.courseRepo
-        .createQueryBuilder('course')
-        .leftJoinAndSelect('course.user_courses', 'user_course')
-        .leftJoinAndSelect('course.lessons', 'lessons')
-        // .where('user_course.userId = :id', { id: user.id })
-        .getMany()
-      // const progress = 0;
-      const rs = courses.map((course) => {
-        let progress = 0;
-        let totalTime = 0;
-        const totalUsers = course.user_courses.length;
-        const { user_courses, ...cour } = course;
-        user_courses.map((u) => {
-          if (u.userId === user.id) {
-            progress = u.progress
-          }
-        })
-        //lesson.duration = '10:04'
-        course.lessons.forEach((lesson) => {
-          totalTime += this.parseDuration(lesson.duration);
-        });
-        return { ...cour, progress: progress, totalUsers, totalTime: this.formatTime(totalTime) }
+    const courses = await this.courseRepo
+      .createQueryBuilder('course')
+      .leftJoinAndSelect('course.user_courses', 'user_course')
+      .leftJoinAndSelect('course.lessons', 'lessons')
+      // .where('user_course.userId = :id', { id: user.id })
+      .getMany()
+    const rs = courses.map((course) => {
+      let progress = 0;
+      let totalTime = 0;
+      const totalUsers = course.user_courses.length;
+      const { user_courses, ...cour } = course;
+      user_courses.map((u) => {
+        if (user && (u.userId === user.id)) {
+          progress = u.progress
+        }
       })
-      return rs;
-    }
-    return this.courseRepo.find({});
+      course.lessons.forEach((lesson) => {
+        totalTime += this.parseDuration(lesson.duration);
+      });
+      return { ...cour, progress: progress, totalUsers, totalTime: this.formatTime(totalTime) }
+    })
+    return rs;
   }
 
   formatTime(seconds: number): string {

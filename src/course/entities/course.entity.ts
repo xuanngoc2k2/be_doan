@@ -11,7 +11,7 @@ export class Course {
     @Column({ nullable: false })
     course_name: string;
 
-    @Column()
+    @Column({ nullable: true })
     description: string;
 
     @Column()

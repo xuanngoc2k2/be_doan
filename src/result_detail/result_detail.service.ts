@@ -67,6 +67,7 @@ export class ResultDetailService {
         'group_question.id',
         'group_question.description',
         'group_question.content',
+        'group_question.audio',
         'group_question.image',
         'question.id',
         'question.question',

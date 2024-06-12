@@ -5,7 +5,6 @@ export class CreateCourseDto {
     @IsNotEmpty({ message: "Tên khóa học không được để trống !" })
     course_name: string;
 
-    @IsString({ message: "Mô tả phải là string" })
     description: string;
 
     @IsNotEmpty({ message: "Level Required được để trống !" })

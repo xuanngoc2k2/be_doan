@@ -37,6 +37,7 @@ export class GroupQuestionService {
       .where('group_question.id = :id', { id })
       .getOne();
   }
+
   async findQuestionById(idGroup: number, idQuestion) {
     return await this.groupQuestionRepo
       .createQueryBuilder('group_question')

@@ -28,11 +28,12 @@ export class ListVocabController {
     return this.listVocabService.copy(+idList, user, name, des);
   }
 
-  @Get()
+
+  @Post('/all')
   @Public()
   @ResponseMessage("Get all list từ")
   findAll(
-    @User() user: IUser,
+    @Body('user') user?: IUser,
     @Query('search') search?: string
   ) {
     return this.listVocabService.findAll(user, search);

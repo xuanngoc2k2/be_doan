@@ -119,12 +119,20 @@ export class LessonService {
     if (!lesson) {
       throw new BadRequestException("Không tìm thấy bài học");
     }
+    let course = updateLessonDto.course;
+    if (updateLessonDto.courseId) {
+      course = await this.courseRepo.findOne({ where: { id: updateLessonDto.courseId } });
+      if (!course) {
+        throw new BadRequestException("Không tìm thấy khóa học");
+      }
+    }
     const question = await this.questionRepo.findOne({ where: { id: updateLessonDto.questionId } });
     if (updateLessonDto.isQuestion) {
       updateLessonDto.content = null;
       updateLessonDto.duration = "0:00";
     }
-    const result = await this.lessonRepo.update({ id }, { ...updateLessonDto, question: question });
+    const { courseId, ...updateData } = updateLessonDto;
+    const result = await this.lessonRepo.update({ id }, { ...updateData, question: question, course: course });
     if (result.affected === 0) {
       throw new BadRequestException("Cập nhật lỗi !");
     }

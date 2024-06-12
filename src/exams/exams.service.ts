@@ -23,25 +23,6 @@ export class ExamsService {
   ) {
   }
 
-  // async create(exam: Exam, group_questions: Group_Question[]) {
-  //   if (exam.startAt > exam.endAt) {
-  //     throw new BadRequestException("endAt phải sau startAt");
-  //   }
-  //   const newExam = await this.examRepo.create({ ...exam });
-  //   await this.examRepo.save(newExam)
-  //   await Promise.all(group_questions.map(async (group_question) => {
-  //     const listQuestion = [];
-  //     if (group_question.id) {
-  //       group_question.questions.map((question) => {
-  //         listQuestion.push(question.id);
-  //       });
-  //     }
-  //     await this.examGrRepo.save(await this.examGrRepo.create({ examId: newExam.id, groupQuestionId: group_question.id, listQuestion: listQuestion.toString() }));
-  //   }));
-
-  //   return newExam;
-  // }
-
   async create2(exam: Exam, questions: Question[]) {
     if (exam.startAt > exam.endAt) {
       throw new BadRequestException("endAt phải sau startAt");
@@ -183,31 +164,6 @@ export class ExamsService {
     return this.configResult2(rss)[0];
   }
 
-  // async findOne(id: number) {
-  //   const examGr = await this.examGrRepo
-  //     .createQueryBuilder('examGrquestions')
-  //     .where('examGrquestions.examId = :examId', { examId: id })
-  //     .select(['examGrquestions.listQuestion'])
-  //     .getMany();
-  //   const listQuestion = [];
-  //   examGr.map((ls) => {
-  //     if (ls.listQuestion != '') {
-  //       listQuestion.push(...ls.listQuestion.split(','));
-  //     }
-  //   })
-  //   const rs = await this.examRepo
-  //     .createQueryBuilder('exam')
-  //     .leftJoinAndSelect('exam.examGrquestions', 'examGrquestions')
-  //     .leftJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
-  //     .leftJoinAndSelect('groupQuestion.questions', 'question')
-  //     .leftJoinAndSelect('exam.results', 'result')
-  //     .where('exam.id = :id', { id })
-  //   if (listQuestion.length !== 0) {
-  //     rs.andWhere('question.id IN (:...listQuestion)', { listQuestion });
-  //   }
-  //   const rss = await rs.getMany();
-  //   return this.configResult(rss)[0];
-  // }
   configFindQuestionExam = (rss) => {
     const groupQuestionsWithQuestions: Group_Question[] = [];
     const { examQuestions, ...rs } = rss;
@@ -250,55 +206,6 @@ export class ExamsService {
     return this.configFindQuestionExam(rss);
   }
 
-
-  // findQuestionExam = async (id: number) => {
-  //   const examGr = await this.examGrRepo
-  //     .createQueryBuilder('examGrquestions')
-  //     .where('examGrquestions.examId = :examId', { examId: id })
-  //     .select(['examGrquestions.listQuestion'])
-  //     .getMany();
-  //   const listQuestion = [];
-  //   examGr.map((ls) => {
-  //     if (ls.listQuestion != '') {
-  //       listQuestion.push(...ls.listQuestion.split(','));
-  //     }
-  //   });
-  //   const rs = await this.examRepo
-  //     .createQueryBuilder('exam')
-  //     .leftJoinAndSelect('exam.examGrquestions', 'examGrquestions')
-  //     .leftJoinAndSelect('examGrquestions.groupQuestion', 'groupQuestion')
-  //     .leftJoinAndSelect('groupQuestion.questions', 'question')
-  //     .leftJoinAndSelect('question.answers', 'answer')
-  //     .where('exam.id = :id', { id });
-
-  //   if (listQuestion.length !== 0) {
-  //     rs.andWhere('question.id IN (:...listQuestion)', { listQuestion });
-  //   }
-
-  //   const result = await rs
-  //     .select([
-  //       'exam.duration',
-  //       'examGrquestions.groupQuestionId',
-  //       'examGrquestions.listQuestion',
-  //       'groupQuestion.id',
-  //       'groupQuestion.description',
-  //       'groupQuestion.content',
-  //       'groupQuestion.image',
-  //       'groupQuestion.type',
-  //       'groupQuestion.audio',
-  //       'question.id',
-  //       'question.question',
-  //       'question.level',
-  //       'question.type',
-  //       'question.score',
-  //       'answer.id',
-  //       'answer.answer',
-  //       'answer.isImage',
-  //     ])
-  //     .getOne();
-
-  //   return result;
-  // }
   async countScore(id: number): Promise<number> {
     const exam = await this.examRepo
       .createQueryBuilder('exam')

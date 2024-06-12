@@ -50,7 +50,6 @@ export class LessonController {
   @Put(':id')
   @ResponseMessage("Cập nhật thông tin bài học")
   update(@Param('id') id: string, @Body() updateLessonDto: Object) {
-    console.log(updateLessonDto)
     return this.lessonService.update(+id, updateLessonDto as UpdateLessonDto);
   }
 

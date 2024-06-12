@@ -48,8 +48,6 @@ export class ResultService {
     // const 
   }
 
-
-
   lastCount = async (userId, examId) => {
     const userResult = await this.resultRepo.find({ where: { userId, examId } });
     if (userResult.length == 0) {
